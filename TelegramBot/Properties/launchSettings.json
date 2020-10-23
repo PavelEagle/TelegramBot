@@ -1,0 +1,9 @@
+﻿{
+  "TelegramBot": {
+    "commandName": "Project",
+    "applicationUrl": "http://localhost:8443",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    }
+  }
+}
