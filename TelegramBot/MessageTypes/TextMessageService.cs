@@ -19,6 +19,7 @@ namespace TelegramBot.MessageTypes
       return message.Text switch
       {
         CommandList.Start => new TextMessageService(new StartCommand(botService, message)),
+        CommandList.Weather => new TextMessageService(new WeatherCommand(botService, message)),
         _ => new TextMessageService(new DefaultTextCommand(botService, message))
       };
     }
