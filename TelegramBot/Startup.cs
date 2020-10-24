@@ -17,12 +17,12 @@ namespace TelegramBot
     public IConfiguration Configuration { get; }
     public void ConfigureServices(IServiceCollection services)
     {
+      services.AddScoped<IUpdateService, UpdateService>();
       services.AddSingleton<IBotService, BotService>();
-      services.AddSingleton<IUpdateService, UpdateService>();
       services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
 
-      services
-        .AddControllers();
+      services.AddControllers()
+        .AddNewtonsoftJson(); 
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

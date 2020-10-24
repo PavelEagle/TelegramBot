@@ -40,7 +40,7 @@ namespace TelegramBot.Services
           var file = await _botService.Client.GetFileAsync(fileId);
 
           var filename = file.FileId + "." + file.FilePath.Split('.').Last();
-          using (var saveImageStream = System.IO.File.Open(filename, FileMode.Create))
+          await using (var saveImageStream = System.IO.File.Open(filename, FileMode.Create))
           {
             await _botService.Client.DownloadFileAsync(file.FilePath, saveImageStream);
           }

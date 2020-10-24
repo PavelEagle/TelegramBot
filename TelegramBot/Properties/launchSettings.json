@@ -1,9 +1,21 @@
 ﻿{
-  "TelegramBot": {
-    "commandName": "Project",
-    "applicationUrl": "http://localhost:8443",
-    "environmentVariables": {
-      "ASPNETCORE_ENVIRONMENT": "Development"
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:51101",
+      "sslPort": 44357
+    }
+  },
+  "profiles": {
+    "TelegramBot": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:8443",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }
