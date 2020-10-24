@@ -1,9 +1,8 @@
-﻿using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramBot.MessageTypes;
 
 namespace TelegramBot.Services
 {
@@ -11,6 +10,7 @@ namespace TelegramBot.Services
   {
     private readonly IBotService _botService;
     private readonly ILogger<UpdateService> _logger;
+    private IMessageTypeService _messageType;
 
     public UpdateService(IBotService botService, ILogger<UpdateService> logger)
     {
@@ -30,24 +30,19 @@ namespace TelegramBot.Services
       switch (message.Type)
       {
         case MessageType.Text:
-          // Echo each Message
-          await _botService.Client.SendTextMessageAsync(message.Chat.Id, message.Text);
+          _messageType = TextMessageService.Create(_botService, message);
           break;
 
         case MessageType.Photo:
-          // Download Photo
-          var fileId = message.Photo.LastOrDefault()?.FileId;
-          var file = await _botService.Client.GetFileAsync(fileId);
-
-          var filename = file.FileId + "." + file.FilePath.Split('.').Last();
-          await using (var saveImageStream = System.IO.File.Open(filename, FileMode.Create))
-          {
-            await _botService.Client.DownloadFileAsync(file.FilePath, saveImageStream);
-          }
-
-          await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Thx for the Pics");
+          _messageType = new PhotoMessageService(_botService, message);
           break;
+
+        default:
+          _messageType = new UnknownTypeService(_botService, message);
+          break;
+
       }
+      await _messageType.ProcessMessage();
     }
   }
 }
