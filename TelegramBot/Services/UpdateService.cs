@@ -10,7 +10,7 @@ namespace TelegramBot.Services
   {
     private readonly IBotService _botService;
     private readonly ILogger<UpdateService> _logger;
-    private IMessageTypeService _messageType;
+    private IMessageService _messageType;
 
     public UpdateService(IBotService botService, ILogger<UpdateService> logger)
     {

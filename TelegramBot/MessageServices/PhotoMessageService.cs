@@ -6,7 +6,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.MessageTypes
 {
-  public class PhotoMessageService : IMessageTypeService
+  public class PhotoMessageService : IMessageService
   {
     private readonly IBotService _botService;
     private readonly Message _message;

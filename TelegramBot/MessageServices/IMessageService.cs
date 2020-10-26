@@ -2,7 +2,7 @@
 
 namespace TelegramBot.MessageTypes
 {
-  internal interface IMessageTypeService
+  internal interface IMessageService
   {
     Task ProcessMessage();
   }

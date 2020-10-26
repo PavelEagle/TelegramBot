@@ -2,10 +2,11 @@
 using Telegram.Bot.Types;
 using TelegramBot.Commands;
 using TelegramBot.Services;
+using TelegramBot.TextCommands;
 
 namespace TelegramBot.MessageTypes
 {
-  public class TextMessageService: IMessageTypeService
+  public class TextMessageService: IMessageService
   {
     private readonly ITextCommand _command;
 
@@ -18,8 +19,9 @@ namespace TelegramBot.MessageTypes
     {
       return message.Text switch
       {
-        CommandList.Start => new TextMessageService(new StartCommand(botService, message)),
-        CommandList.Weather => new TextMessageService(new WeatherCommand(botService, message)),
+        var str when str.StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService, message)),
+        var str when str.StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, message)),
+        var str when str.StartsWith(TextCommandList.News) => new TextMessageService(new NewsCommand(botService, message)),
         _ => new TextMessageService(new DefaultTextCommand(botService, message))
       };
     }

@@ -4,7 +4,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.MessageTypes
 {
-  public class UnknownTypeService: IMessageTypeService
+  public class UnknownTypeService: IMessageService
   {
     private readonly IBotService _botService;
     private readonly Message _message;
