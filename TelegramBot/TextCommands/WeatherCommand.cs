@@ -5,7 +5,7 @@ using RestSharp;
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 
-namespace TelegramBot.Commands
+namespace TelegramBot.TextCommands
 {
   public class WeatherCommand: ITextCommand
   {
@@ -19,6 +19,12 @@ namespace TelegramBot.Commands
 
     public async Task ProcessMessage()
     {
+      if (_message.Text.Trim().ToLower() == "/weather")
+      {
+        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Invalid request");
+        return;
+      }
+
       var host = "http://api.openweathermap.org";
       var cityFromMessage = _message.Text.Substring(8).Trim().Replace(" ", "+");
       var uri = $"data/2.5/weather?q={cityFromMessage}&appid=88ec93c8bc578fb7e09367b86bce7577";

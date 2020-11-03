@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace TelegramBot.Commands
+namespace TelegramBot.TextCommands
 {
   public interface ITextCommand
   {

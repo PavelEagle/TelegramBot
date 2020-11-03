@@ -19,9 +19,12 @@ namespace TelegramBot.MessageTypes
     {
       return message.Text switch
       {
-        var str when str.StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService, message)),
-        var str when str.StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, message)),
-        var str when str.StartsWith(TextCommandList.News) => new TextMessageService(new NewsCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Help) => new TextMessageService(new HelpTextCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Search) => new TextMessageService(new YoutubeSearchTextCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.Roll) => new TextMessageService(new RollTextCommand(botService, message)),
         _ => new TextMessageService(new DefaultTextCommand(botService, message))
       };
     }

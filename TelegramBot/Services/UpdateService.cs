@@ -27,21 +27,13 @@ namespace TelegramBot.Services
 
       _logger.LogInformation("Received Message from {0}", message.Chat.Id);
 
-      switch (message.Type)
+      _messageType = message.Type switch
       {
-        case MessageType.Text:
-          _messageType = TextMessageService.Create(_botService, message);
-          break;
+        MessageType.Text => TextMessageService.Create(_botService, message),
+        MessageType.Photo => new PhotoMessageService(_botService, message),
+        _ => new UnknownTypeService(_botService, message)
+      };
 
-        case MessageType.Photo:
-          _messageType = new PhotoMessageService(_botService, message);
-          break;
-
-        default:
-          _messageType = new UnknownTypeService(_botService, message);
-          break;
-
-      }
       await _messageType.ProcessMessage();
     }
   }

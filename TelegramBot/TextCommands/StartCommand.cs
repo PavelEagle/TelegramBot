@@ -2,7 +2,7 @@
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 
-namespace TelegramBot.Commands
+namespace TelegramBot.TextCommands
 {
   public class StartCommand: ITextCommand
   {
@@ -16,7 +16,7 @@ namespace TelegramBot.Commands
 
     public async Task ProcessMessage()
     {
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Welcome!");
+      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Welcome! Type /help to show more info.");
     }
   }
 }

@@ -2,7 +2,7 @@
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 
-namespace TelegramBot.Commands
+namespace TelegramBot.TextCommands
 {
   public class DefaultTextCommand: ITextCommand
   {
