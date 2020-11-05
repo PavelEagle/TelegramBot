@@ -8,5 +8,6 @@
     public const string Help = "/help";
     public const string Search = "/search";
     public const string Roll = "/roll";
+    public const string TextToSpeech = "/speech";
   }
 }
