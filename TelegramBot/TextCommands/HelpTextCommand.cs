@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
@@ -16,6 +17,11 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
+      var inlineKeyboard = new InlineKeyboardMarkup(new[]
+      {
+        new[] {InlineKeyboardButton.WithUrl("google", "https://www.google.com/"),}
+      });
+
       var helpAnswer = new StringBuilder();
       helpAnswer.Append("/weather {city} - get weather info\n");
       helpAnswer.Append("/search {query} - search videos on youtube\n");

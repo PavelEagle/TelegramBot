@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ApiAiSDK;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 
@@ -15,6 +16,8 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
+      var ket = "";
+
       await _botService.Client.SendTextMessageAsync(_message.Chat.Id, _message.Text);
     }
   }
