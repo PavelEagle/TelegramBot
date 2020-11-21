@@ -30,6 +30,13 @@ namespace TelegramBot.MessageTypes
       };
     }
 
+    public static TextMessageService Create(IBotService botService, CallbackQuery callbackQuery)
+    {
+      var message = callbackQuery.Message;
+      message.Text = callbackQuery.Data;
+      return Create(botService, message);
+    }
+
     public async Task ProcessMessage()
     {
       await _command.ProcessMessage();

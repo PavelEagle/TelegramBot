@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramBot.Extensions;
 using TelegramBot.MessageTypes;
 
 namespace TelegramBot.Services
@@ -20,20 +21,27 @@ namespace TelegramBot.Services
 
     public async Task EchoAsync(Update update)
     {
-      if (update.Type != UpdateType.Message)
+      if (update.Type != UpdateType.Message && update.Type != UpdateType.CallbackQuery)
         return;
 
-      var message = update.Message;
-
-      _logger.LogInformation("Received Message from {0}", message.Chat.Id);
-
-      _messageType = message.Type switch
+      if (update.Type == UpdateType.CallbackQuery)
       {
-        MessageType.Text => TextMessageService.Create(_botService, message),
-        MessageType.Photo => new PhotoMessageService(_botService, message),
-        _ => new UnknownTypeService(_botService, message)
-      };
+        _logger.LogInformation("Received Callback from {0}", update.CallbackQuery.Message.Chat.Id);
+        _messageType = TextMessageService.Create(_botService, update.CallbackQuery);
+      }
+      else
+      {
+        var message = update.Message;
+        _logger.LogInformation("Received Message from {0}", message.Chat.Id);
 
+        _messageType = message.Type switch
+        {
+          MessageType.Text => TextMessageService.Create(_botService, message),
+          MessageType.Photo => new PhotoMessageService(_botService, message),
+          _ => new UnknownTypeService(_botService, message)
+        };
+      }
+      
       await _messageType.ProcessMessage();
     }
   }

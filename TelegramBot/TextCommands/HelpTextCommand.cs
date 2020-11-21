@@ -19,15 +19,13 @@ namespace TelegramBot.TextCommands
     {
       var inlineKeyboard = new InlineKeyboardMarkup(new[]
       {
-        new[] {InlineKeyboardButton.WithUrl("google", "https://www.google.com/"),}
+        new[] {InlineKeyboardButton.WithCallbackData("Get weather info", "/weather Samara") },
+        new[] {InlineKeyboardButton.WithCallbackData("Search videos on youtube", "/search Dancing") },
+        new[] {InlineKeyboardButton.WithCallbackData("Search article on wiki", "/wiki Eagle") },
+        new[] {InlineKeyboardButton.WithCallbackData("Roll random number from 1 to 100", "/roll") }
       });
 
-      var helpAnswer = new StringBuilder();
-      helpAnswer.Append("/weather {city} - get weather info\n");
-      helpAnswer.Append("/search {query} - search videos on youtube\n");
-      helpAnswer.Append("/wiki {query} - search article on wiki\n");
-      helpAnswer.Append("/roll - 1-100 random number\n");
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, helpAnswer.ToString());
+      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Make your choice: ", replyMarkup: inlineKeyboard);
     }
   }
 }
