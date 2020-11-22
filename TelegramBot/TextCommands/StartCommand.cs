@@ -17,26 +17,12 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage()
     {
-      var keyboard = new ReplyKeyboardMarkup(new[]
-      {
-        new []
-        {
-          new KeyboardButton("/weather Moscow"),
-          new KeyboardButton("/search Dance")
-        },
-        new[]
-        {
-          new KeyboardButton("/wiki Deagle") { Text = "Wiki"},
-          new KeyboardButton("/roll")
-        },
-        new[]
-        {
-          new KeyboardButton("Геолокация") { RequestLocation = true},
-          new KeyboardButton("/roll")
-        }
+      var inlineKeyboard = new InlineKeyboardMarkup(new[]
+       {
+        new[] {InlineKeyboardButton.WithCallbackData("Help!", "/help") }
       });
 
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Welcome! Type /help to show more info.", replyMarkup: keyboard);
+      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Welcome! This is bot, bla-bla-bla. Click help to show more info", replyMarkup: inlineKeyboard);
     }
   }
 }

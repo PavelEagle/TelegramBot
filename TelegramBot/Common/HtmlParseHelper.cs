@@ -5,11 +5,26 @@ using System.Text.RegularExpressions;
 using AngleSharp.Dom;
 using HtmlAgilityPack;
 
-namespace TelegramBot.Extensions
+namespace TelegramBot.Common
 {
-  public static class HtmlExtensions
+  public static class HtmlParseHelper
   {
-    internal static string RemoveUnwantedTagsFromInnerText(string data)
+    public static string RemoveUnwantedTagsFromHtmlCollection(IHtmlCollection<IElement> htmlCollection)
+    {
+      var result = new StringBuilder();
+      foreach (var html in htmlCollection)
+      {
+        if (html.InnerHtml.Length > 100)
+        {
+          result.Append(RemoveUnwantedTagsFromInnerText(html.InnerHtml));
+          result.Append("\n");
+        }
+      }
+
+      return RemoveClosingBrackets(result.ToString());
+    }
+
+    private static string RemoveUnwantedTagsFromInnerText(string data)
     {
       if (string.IsNullOrEmpty(data)) return string.Empty;
 
@@ -36,27 +51,11 @@ namespace TelegramBot.Extensions
               parentNode.InsertBefore(child, node);
             }
           }
-
           parentNode.RemoveChild(node);
         }
       }
 
       return document.DocumentNode.InnerHtml;
-    }
-
-    internal static string RemoveUnwantedTagsFromHtmlCollection(this IHtmlCollection<IElement> htmlCollection)
-    {
-      var result = new StringBuilder();
-      foreach (var html in htmlCollection)
-      {
-        if (html.InnerHtml.Length > 100)
-        {
-          result.Append(RemoveUnwantedTagsFromInnerText(html.InnerHtml));
-          result.Append("\n");
-        }
-      }
-
-      return RemoveClosingBrackets(result.ToString());
     }
 
     private static string RemoveClosingBrackets(string str)

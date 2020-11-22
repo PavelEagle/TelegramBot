@@ -19,9 +19,9 @@ namespace TelegramBot.TextCommands
     {
       var inlineKeyboard = new InlineKeyboardMarkup(new[]
       {
-        new[] {InlineKeyboardButton.WithCallbackData("Get weather info", "/weather Samara") },
-        new[] {InlineKeyboardButton.WithCallbackData("Search videos on youtube", "/search Dancing") },
-        new[] {InlineKeyboardButton.WithCallbackData("Search article on wiki", "/wiki Eagle") },
+        new[] {InlineKeyboardButton.WithCallbackData("Get weather info", "/weather") },
+        new[] {InlineKeyboardButton.WithCallbackData("Search videos on youtube", "/search") },
+        new[] {InlineKeyboardButton.WithCallbackData("Search article on wiki", "/wiki") },
         new[] {InlineKeyboardButton.WithCallbackData("Roll random number from 1 to 100", "/roll") }
       });
 

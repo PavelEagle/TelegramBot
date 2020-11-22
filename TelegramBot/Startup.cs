@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +18,7 @@ namespace TelegramBot
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddScoped<IUpdateService, UpdateService>();
-      services.AddSingleton<IBotService, BotService>();
+      services.AddTransient<IBotService, BotService>();
       services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
 
       services.AddControllers()

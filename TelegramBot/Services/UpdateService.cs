@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramBot.Extensions;
 using TelegramBot.MessageTypes;
 
 namespace TelegramBot.Services

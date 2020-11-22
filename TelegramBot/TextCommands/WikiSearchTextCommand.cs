@@ -2,8 +2,10 @@
 using AngleSharp;
 using AngleSharp.Html.Parser;
 using Telegram.Bot.Types;
-using TelegramBot.Extensions;
 using TelegramBot.Services;
+using TelegramBot.Common;
+using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Commands;
 
 namespace TelegramBot.TextCommands
 {
@@ -21,6 +23,18 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage()
     {
+      if (_message.Text.Trim().ToLower() == TextCommandList.Wiki)
+      {
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        {
+          new[] {InlineKeyboardButton.WithCallbackData("Travel", "/wiki Travel") },
+          new[] {InlineKeyboardButton.WithCallbackData("Singing", "/wiki Singing") },
+          new[] {InlineKeyboardButton.WithCallbackData("Samara", "/wiki Samara") }
+        });
+
+        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Also you can read articles from wiki in English. Exapmle: /wiki {yourRequest}", replyMarkup: inlineKeyboard);
+      }
+
       var baseUrl = "https://en.wikipedia.org/wiki/";
       var config = Configuration.Default.WithDefaultLoader().WithCss();
       var context = BrowsingContext.New(config);
@@ -34,8 +48,8 @@ namespace TelegramBot.TextCommands
       var source = await context.OpenAsync(baseUrl+ query);
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
-      var textSection = document.GetElementById("mf-section-0");
-      var result = textSection?.GetElementsByTagName("p").RemoveUnwantedTagsFromHtmlCollection();
+      var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
+      var result = HtmlParseHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
 
       if (string.IsNullOrEmpty(result))
       {

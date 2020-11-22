@@ -4,6 +4,8 @@ using Telegram.Bot.Types;
 using TelegramBot.Services;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
+using TelegramBot.Commands;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace TelegramBot.TextCommands
 {
@@ -18,10 +20,16 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
-      if (_message.Text.Trim().ToLower()=="/search")
+      if (_message.Text.Trim().ToLower() == TextCommandList.Search)
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Invalid request");
-        return;
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        {
+          new[] {InlineKeyboardButton.WithCallbackData("Dancing!", "/youtube Dancing") },
+          new[] {InlineKeyboardButton.WithCallbackData("Cats", "/youtube Cats") },
+          new[] {InlineKeyboardButton.WithCallbackData("Space", "/youtube Space") }
+        });
+
+        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Yeah, you can see youtube videos! Exapmle: /youtube {yourRequest}", replyMarkup: inlineKeyboard);
       }
 
       var query = _message.Text.Substring(7).Trim().Replace(" ", "+");

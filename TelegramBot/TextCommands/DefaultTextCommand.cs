@@ -16,8 +16,6 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
-      var ket = "";
-
       await _botService.Client.SendTextMessageAsync(_message.Chat.Id, _message.Text);
     }
   }
