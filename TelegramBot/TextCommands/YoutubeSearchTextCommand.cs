@@ -6,6 +6,7 @@ using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using TelegramBot.Commands;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Common;
 
 namespace TelegramBot.TextCommands
 {
@@ -20,13 +21,13 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
-      if (_message.Text.Trim().ToLower() == TextCommandList.Search)
+      if (_message.Text.Trim().ToLower() == TextCommandList.YoutubeSearch)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] {InlineKeyboardButton.WithCallbackData("Dancing!", "/youtube Dancing") },
-          new[] {InlineKeyboardButton.WithCallbackData("Cats", "/youtube Cats") },
-          new[] {InlineKeyboardButton.WithCallbackData("Space", "/youtube Space") }
+          new[] {InlineKeyboardButton.WithCallbackData("Dancing!", TextCommandList.YoutubeSearch + " Dancing") },
+          new[] {InlineKeyboardButton.WithCallbackData("Cats", TextCommandList.YoutubeSearch + " Cats") },
+          new[] {InlineKeyboardButton.WithCallbackData("Space", TextCommandList.YoutubeSearch + " Space") }
         });
 
         await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Yeah, you can see youtube videos! Exapmle: /youtube {yourRequest}", replyMarkup: inlineKeyboard);
@@ -44,13 +45,13 @@ namespace TelegramBot.TextCommands
 
       if (search.Items == null || search.Items.Count == 0)
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "No videos:(");
+        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "No videos:(", replyMarkup: KeyboardBuilder.CreateExitButton());
         return;
       }
 
       for (var index = 0; index < Math.Min(search.Items.Count, 3); index++)
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, search.Items[index].Link);
+        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, search.Items[index].Link, replyMarkup: KeyboardBuilder.CreateExitButton());
       }
     }
   }

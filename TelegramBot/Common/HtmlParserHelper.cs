@@ -7,7 +7,7 @@ using HtmlAgilityPack;
 
 namespace TelegramBot.Common
 {
-  public static class HtmlParseHelper
+  public static class HtmlParserHelper
   {
     public static string RemoveUnwantedTagsFromHtmlCollection(IHtmlCollection<IElement> htmlCollection)
     {

@@ -23,7 +23,7 @@ namespace TelegramBot.MessageTypes
         var str when str.ToLower().StartsWith(TextCommandList.Help) => new TextMessageService(new HelpTextCommand(botService, message)),
         var str when str.ToLower().StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, message)),
         var str when str.ToLower().StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.Search) => new TextMessageService(new YoutubeSearchTextCommand(botService, message)),
+        var str when str.ToLower().StartsWith(TextCommandList.YoutubeSearch) => new TextMessageService(new YoutubeSearchTextCommand(botService, message)),
         var str when str.ToLower().StartsWith(TextCommandList.Roll) => new TextMessageService(new RollTextCommand(botService, message)),
         var str when str.ToLower().StartsWith(TextCommandList.TextToSpeech) => new TextMessageService(new TextToSpeechCommand(botService, message)),
         _ => new TextMessageService(new DefaultTextCommand(botService, message))

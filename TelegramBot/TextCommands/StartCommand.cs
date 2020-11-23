@@ -2,6 +2,7 @@
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Commands;
 
 namespace TelegramBot.TextCommands
 {
@@ -19,7 +20,7 @@ namespace TelegramBot.TextCommands
     {
       var inlineKeyboard = new InlineKeyboardMarkup(new[]
        {
-        new[] {InlineKeyboardButton.WithCallbackData("Help!", "/help") }
+        new[] {InlineKeyboardButton.WithCallbackData("Help!", TextCommandList.Help) }
       });
 
       await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Welcome! This is bot, bla-bla-bla. Click help to show more info", replyMarkup: inlineKeyboard);

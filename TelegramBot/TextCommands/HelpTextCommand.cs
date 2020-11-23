@@ -1,7 +1,6 @@
-﻿using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Common;
 using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
@@ -17,15 +16,7 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage()
     {
-      var inlineKeyboard = new InlineKeyboardMarkup(new[]
-      {
-        new[] {InlineKeyboardButton.WithCallbackData("Get weather info", "/weather") },
-        new[] {InlineKeyboardButton.WithCallbackData("Search videos on youtube", "/search") },
-        new[] {InlineKeyboardButton.WithCallbackData("Search article on wiki", "/wiki") },
-        new[] {InlineKeyboardButton.WithCallbackData("Roll random number from 1 to 100", "/roll") }
-      });
-
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Make your choice: ", replyMarkup: inlineKeyboard);
+      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Make your choice: ", replyMarkup: KeyboardBuilder.CreateHelpMenu());
     }
   }
 }

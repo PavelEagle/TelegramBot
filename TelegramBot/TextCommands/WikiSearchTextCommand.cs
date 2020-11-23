@@ -27,14 +27,14 @@ namespace TelegramBot.TextCommands
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] {InlineKeyboardButton.WithCallbackData("Travel", "/wiki Travel") },
-          new[] {InlineKeyboardButton.WithCallbackData("Singing", "/wiki Singing") },
-          new[] {InlineKeyboardButton.WithCallbackData("Samara", "/wiki Samara") }
+          new[] {InlineKeyboardButton.WithCallbackData("Travel", TextCommandList.Wiki + " Travel") },
+          new[] {InlineKeyboardButton.WithCallbackData("Singing", TextCommandList.Wiki + " Singing") },
+          new[] {InlineKeyboardButton.WithCallbackData("Samara", TextCommandList.Wiki + " Samara") }
         });
 
         await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Also you can read articles from wiki in English. Exapmle: /wiki {yourRequest}", replyMarkup: inlineKeyboard);
+        return;
       }
-
       var baseUrl = "https://en.wikipedia.org/wiki/";
       var config = Configuration.Default.WithDefaultLoader().WithCss();
       var context = BrowsingContext.New(config);
@@ -49,7 +49,7 @@ namespace TelegramBot.TextCommands
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
-      var result = HtmlParseHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
+      var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
 
       if (string.IsNullOrEmpty(result))
       {
@@ -57,7 +57,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, result);
+      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
     }
   }
 }
