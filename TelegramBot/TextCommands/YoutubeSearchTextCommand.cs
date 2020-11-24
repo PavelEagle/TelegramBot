@@ -12,16 +12,14 @@ namespace TelegramBot.TextCommands
 {
   public class YoutubeSearchTextCommand : ITextCommand
   {
-    private readonly Message _message;
     private readonly IBotService _botService;
-    public YoutubeSearchTextCommand(IBotService botService, Message message)
+    public YoutubeSearchTextCommand(IBotService botService)
     {
-      _message = message;
       _botService = botService;
     }
-    public async Task ProcessMessage()
+    public async Task ProcessMessage(Message message)
     {
-      if (_message.Text.Trim().ToLower() == TextCommandList.YoutubeSearch)
+      if (message.Text.Trim().ToLower() == TextCommandList.YoutubeSearch)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -30,10 +28,10 @@ namespace TelegramBot.TextCommands
           new[] {InlineKeyboardButton.WithCallbackData("Space", TextCommandList.YoutubeSearch + " Space") }
         });
 
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Yeah, you can see youtube videos! Exapmle: /youtube {yourRequest}", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Yeah, you can see youtube videos! Exapmle: /youtube {yourRequest}", replyMarkup: inlineKeyboard);
       }
 
-      var query = _message.Text.Substring(7).Trim().Replace(" ", "+");
+      var query = message.Text.Substring(7).Trim().Replace(" ", "+");
       var cx = "65e3d895a76958419";
       var apiKey = "AIzaSyD8bcAb-gJryXj3hZ_oeXq6T3Rih9hyUNA";
       var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = apiKey});
@@ -45,13 +43,13 @@ namespace TelegramBot.TextCommands
 
       if (search.Items == null || search.Items.Count == 0)
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "No videos:(", replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "No videos:(", replyMarkup: KeyboardBuilder.CreateExitButton());
         return;
       }
 
       for (var index = 0; index < Math.Min(search.Items.Count, 3); index++)
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, search.Items[index].Link, replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[index].Link, replyMarkup: KeyboardBuilder.CreateExitButton());
       }
     }
   }

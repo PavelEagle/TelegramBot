@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using Telegram.Bot.Args;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.Commands;
 using TelegramBot.Common;
@@ -15,17 +12,15 @@ namespace TelegramBot.TextCommands
 {
   public class WeatherCommand : ITextCommand
   {
-    private readonly Message _message;
     private readonly IBotService _botService;
-    public WeatherCommand(IBotService botService, Message message)
+    public WeatherCommand(IBotService botService)
     {
-      _message = message;
       _botService = botService;
     }
 
-    public async Task ProcessMessage()
+    public async Task ProcessMessage(Message message)
     {
-      if (_message.Text.Trim().ToLower() == TextCommandList.Weather)
+      if (message.Text.Trim().ToLower() == TextCommandList.Weather)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -37,13 +32,13 @@ namespace TelegramBot.TextCommands
           }
         });
 
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Make your choice: ", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Make your choice: ", replyMarkup: inlineKeyboard);
       }
       
       else
       {
         var host = "http://api.openweathermap.org";
-        var cityFromMessage = _message.Text.Substring(8).Trim().Replace(" ", "+");
+        var cityFromMessage = message.Text.Substring(8).Trim().Replace(" ", "+");
         var uri = $"data/2.5/weather?q={cityFromMessage}&appid=88ec93c8bc578fb7e09367b86bce7577";
 
         var client = new RestClient(host);
@@ -53,13 +48,13 @@ namespace TelegramBot.TextCommands
 
         if (json["cod"].ToString() == "404")
         {
-          await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Unknown city");
+          await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Unknown city");
           return;
         }
 
         if (json["name"] == null)
         {
-          await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Server Error");
+          await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Server Error");
           return;
         }
 
@@ -69,7 +64,7 @@ namespace TelegramBot.TextCommands
         var wind = json["wind"]["speed"];
 
         var result = $"City: {city},\nWeather: {weather},\nTemperature: {temp} °C,\nWind: {wind} m/s";
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
       }
       
     }

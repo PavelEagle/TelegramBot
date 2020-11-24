@@ -9,24 +9,26 @@ namespace TelegramBot.MessageTypes
   public class TextMessageService: IMessageService
   {
     private readonly ITextCommand _command;
+    private readonly Message _message;
 
-    private TextMessageService(ITextCommand command)
+    private TextMessageService(ITextCommand command, Message message)
     {
       _command = command;
+      _message = message;
     }
 
     public static TextMessageService Create(IBotService botService, Message message)
     {
       return message.Text switch
       {
-        var str when str.ToLower().StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.Help) => new TextMessageService(new HelpTextCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.YoutubeSearch) => new TextMessageService(new YoutubeSearchTextCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.Roll) => new TextMessageService(new RollTextCommand(botService, message)),
-        var str when str.ToLower().StartsWith(TextCommandList.TextToSpeech) => new TextMessageService(new TextToSpeechCommand(botService, message)),
-        _ => new TextMessageService(new DefaultTextCommand(botService, message))
+        var str when str.ToLower().StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.Help) => new TextMessageService(new HelpTextCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.YoutubeSearch) => new TextMessageService(new YoutubeSearchTextCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.Roll) => new TextMessageService(new RollTextCommand(botService), message),
+        var str when str.ToLower().StartsWith(TextCommandList.TextToSpeech) => new TextMessageService(new TextToSpeechCommand(botService), message),
+        _ => new TextMessageService(new DefaultTextCommand(botService), message)
       };
     }
 
@@ -39,7 +41,7 @@ namespace TelegramBot.MessageTypes
 
     public async Task ProcessMessage()
     {
-      await _command.ProcessMessage();
+      await _command.ProcessMessage(_message);
     }
   }
 }

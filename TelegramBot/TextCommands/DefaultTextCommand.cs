@@ -1,31 +1,31 @@
-﻿using ApiAiSDK;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using TelegramBot.BotDialogData;
 using TelegramBot.Services;
+using System.Linq;
 
 namespace TelegramBot.TextCommands
 {
   public class DefaultTextCommand: ITextCommand
   {
-    private readonly Message _message;
     private readonly IBotService _botService;
-    public DefaultTextCommand(IBotService botService, Message message)
+    public DefaultTextCommand(IBotService botService)
     {
-      _message = message;
       _botService = botService;
     }
-    public async Task ProcessMessage()
-    {
-      var token = "0f962c1104ea4663bb5fa1ca2bb105ad";
-      var config = new AIConfiguration(token, SupportedLanguage.English);
-      var apiAi = new ApiAi(config);
-      var response = apiAi.TextRequest(_message.Text);
-      var answer = response.Result.Fulfillment.Speech;
 
-      if (string.IsNullOrEmpty(answer))
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Sorry, i don't understand");
-      else
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, answer);
+    public async Task ProcessMessage(Message message)
+    {
+      var test = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text));
+
+      if (!test.Any())
+      {
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
+        return;
+      }
+
+      var result = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text))?.FirstOrDefault().Answers?.FirstOrDefault();
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result);
     }
   }
 }

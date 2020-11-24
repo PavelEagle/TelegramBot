@@ -1,9 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace TelegramBot.TextCommands
 {
   public interface ITextCommand
   {
-    Task ProcessMessage();
+    Task ProcessMessage(Message message);
   }
 }

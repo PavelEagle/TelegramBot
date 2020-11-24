@@ -11,19 +11,17 @@ namespace TelegramBot.TextCommands
 {
   public class WikiSearchTextCommand : ITextCommand
   {
-    private readonly Message _message;
     private readonly IBotService _botService;
     private readonly HtmlParser _htmlParser;
-    public WikiSearchTextCommand(IBotService botService, Message message)
+    public WikiSearchTextCommand(IBotService botService)
     {
-      _message = message;
       _botService = botService;
       _htmlParser = new HtmlParser();
     }
 
-    public async Task ProcessMessage()
+    public async Task ProcessMessage(Message message)
     {
-      if (_message.Text.Trim().ToLower() == TextCommandList.Wiki)
+      if (message.Text.Trim().ToLower() == TextCommandList.Wiki)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -32,16 +30,16 @@ namespace TelegramBot.TextCommands
           new[] {InlineKeyboardButton.WithCallbackData("Samara", TextCommandList.Wiki + " Samara") }
         });
 
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Also you can read articles from wiki in English. Exapmle: /wiki {yourRequest}", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Also you can read articles from wiki in English. Exapmle: /wiki {yourRequest}", replyMarkup: inlineKeyboard);
         return;
       }
       var baseUrl = "https://en.wikipedia.org/wiki/";
       var config = Configuration.Default.WithDefaultLoader().WithCss();
       var context = BrowsingContext.New(config);
-      var query = _message.Text.Substring(5).Trim();
+      var query = message.Text.Substring(5).Trim();
       if (string.IsNullOrEmpty(query))
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Invalid request");
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Invalid request");
         return;
       }
 
@@ -53,11 +51,11 @@ namespace TelegramBot.TextCommands
 
       if (string.IsNullOrEmpty(result))
       {
-        await _botService.Client.SendTextMessageAsync(_message.Chat.Id, "Not found");
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found");
         return;
       }
 
-      await _botService.Client.SendTextMessageAsync(_message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
     }
   }
 }
