@@ -55,7 +55,9 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
+      var keyboard = KeyboardBuilder.CreateHelpMenu();
+
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: keyboard);
     }
   }
 }

@@ -41,15 +41,17 @@ namespace TelegramBot.TextCommands
       listRequest.Cx = cx;
       var search = await listRequest.ExecuteAsync();
 
+      var keyboard = KeyboardBuilder.CreateHelpMenu();
+
       if (search.Items == null || search.Items.Count == 0)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "No videos:(", replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "No videos:(", replyMarkup: keyboard);
         return;
       }
 
       for (var index = 0; index < Math.Min(search.Items.Count, 3); index++)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[index].Link, replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[index].Link, replyMarkup: keyboard);
       }
     }
   }

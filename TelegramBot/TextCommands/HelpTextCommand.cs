@@ -14,7 +14,8 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage(Message message)
     {
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Make your choice: ", replyMarkup: KeyboardBuilder.CreateHelpMenu());
+      var keyboard = KeyboardBuilder.CreateHelpMenu()
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Make your choice: ", replyMarkup: keyboard);
     }
   }
 }

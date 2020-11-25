@@ -63,8 +63,10 @@ namespace TelegramBot.TextCommands
         var temp = Math.Round((double)json["main"]["temp"] - 273.15, 2);
         var wind = json["wind"]["speed"];
 
+        var keyboard = KeyboardBuilder.CreateHelpMenu();
+
         var result = $"City: {city},\nWeather: {weather},\nTemperature: {temp} °C,\nWind: {wind} m/s";
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: KeyboardBuilder.CreateExitButton());
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: keyboard);
       }
       
     }

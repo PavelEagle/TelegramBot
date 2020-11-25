@@ -18,9 +18,9 @@ namespace TelegramBot.Common
     {
       var resultedList = new List<List<InlineKeyboardButton>>();
 
-      foreach(var button in TextCommandList.GetHelpCommands())
+      foreach(var (key, value) in TextCommandList.GetHelpCommands())
       {
-        resultedList.Add(new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(button.Key, button.Value) });
+        resultedList.Add(new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData(key, value) });
       }
       return new InlineKeyboardMarkup(resultedList);
     }

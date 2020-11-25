@@ -24,7 +24,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var result = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text))?.FirstOrDefault().Answers?.FirstOrDefault();
+      var result = DialogBotData.DialogData.FirstOrDefault(x => x.Question.Contains(message.Text))?.Answers?.FirstOrDefault();
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, result);
     }
   }
