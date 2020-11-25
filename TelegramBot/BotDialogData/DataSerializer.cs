@@ -5,17 +5,17 @@ namespace TelegramBot.BotDialogData
 {
   public static class DataSerializer
   {
-    public static byte[] Serialize(List<DialogData> tData)
+    public static byte[] Serialize<T>(ICollection<T> tData)
     {
       using var ms = new MemoryStream();
       ProtoBuf.Serializer.Serialize(ms, tData);
       return ms.ToArray();
     }
 
-    public static List<DialogData> Deserialize(byte[] tData)
+    public static HashSet<T> Deserialize<T>(byte[] tData)
     {
       using var ms = new MemoryStream(tData);
-      return ProtoBuf.Serializer.Deserialize<List<DialogData>>(ms);
+      return ProtoBuf.Serializer.Deserialize<HashSet<T>>(ms);
     }
   }
 }

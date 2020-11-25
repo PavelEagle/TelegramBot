@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="AngleSharp.Css" Version="0.14.2" />
-    <PackageReference Include="ApiAiSDK" Version="1.6.5" />
     <PackageReference Include="BotSharp.Core" Version="0.4.0" />
     <PackageReference Include="Google.Apis.Customsearch.v1" Version="1.49.0.2084" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.26" />

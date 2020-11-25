@@ -4,6 +4,7 @@ namespace TelegramBot.BotDialogData
 {
   public static class DialogBotData
   {
-    public static List<DialogData> DialogData { get; set; }
+    public static HashSet<AnswersData> AnswerData { get; set; }
+    public static HashSet<QuestionsData> QuestionsData { get; set; }
   }
 }

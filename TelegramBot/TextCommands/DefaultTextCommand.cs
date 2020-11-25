@@ -16,16 +16,18 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      var test = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text));
+      //var test = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text));
 
-      if (!test.Any())
-      {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
-        return;
-      }
+      //if (!test.Any())
+      //{
+      //  await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
+      //  return;
+      //}
 
-      var result = DialogBotData.DialogData.FirstOrDefault(x => x.Question.Contains(message.Text))?.Answers?.FirstOrDefault();
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result);
+      //var result = DialogBotData.DialogData.FirstOrDefault(x => x.Question.Contains(message.Text))?.Answers?.FirstOrDefault();
+      //await _botService.Client.SendTextMessageAsync(message.Chat.Id, result);
+
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
     }
   }
 }
