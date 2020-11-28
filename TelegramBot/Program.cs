@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TelegramBot.BotDialogData;
 
@@ -10,7 +12,6 @@ namespace TelegramBot
   {
     public async static Task Main(string[] args)
     {
-      //File.WriteAllBytes("BotData/questions-data.txt", DataSerializer.Serialize(test));
       await AppInit();
       CreateHostBuilder(args).Build().Run();
     }
@@ -25,16 +26,16 @@ namespace TelegramBot
     private static async Task AppInit()
     {
       var answersDataFilePath = "BotData/answers-data.txt";
-      var answersData = await File.ReadAllBytesAsync(answersDataFilePath);
-      DialogBotData.AnswerData = DataSerializer.Deserialize<AnswersData>(answersData);
+      DialogBotData.AnswerData = await DataService.LodaData<HashSet<AnswersData>>(answersDataFilePath);
 
       var questionsDataFilePath = "BotData/questions-data.txt";
-      var questionsData = await File.ReadAllBytesAsync(questionsDataFilePath);
-      DialogBotData.QuestionsData = DataSerializer.Deserialize<QuestionsData>(questionsData);
+      DialogBotData.QuestionsData = await DataService.LodaData<HashSet<QuestionsData>>(questionsDataFilePath);
 
-      var chatSettingDataFilePath = "BotData/chat-setting.txt";
-      var chatSettingData = await File.ReadAllBytesAsync(chatSettingDataFilePath);
-      ChatSettings.ChatSettingsData = DataSerializer.Deserialize<ChatSettingsBotData>(chatSettingData);
+      if (DialogBotData.QuestionsData!= null)
+        DialogBotData.Count = DialogBotData.QuestionsData.Count;
+
+      var chatSettingsFilePath = "BotData/chat-settings.txt";
+      ChatSettings.ChatSettingsData = await DataService.LodaData<HashSet<ChatSettingsBotData>>(chatSettingsFilePath);
     }
   }
 }

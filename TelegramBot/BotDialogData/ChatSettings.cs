@@ -2,7 +2,7 @@
 
 namespace TelegramBot.BotDialogData
 {
-  public class ChatSettings
+  public static class ChatSettings
   {
     public static HashSet<ChatSettingsBotData> ChatSettingsData { get; set; }
   }

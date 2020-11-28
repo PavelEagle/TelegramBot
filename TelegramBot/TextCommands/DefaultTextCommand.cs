@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using TelegramBot.BotDialogData;
 using TelegramBot.Services;
 using System.Linq;
+using TelegramBot.BotDialogData;
 
 namespace TelegramBot.TextCommands
 {
@@ -16,18 +16,21 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      //var test = DialogBotData.DialogData.Where(x => x.Question.Contains(message.Text));
+      var test = DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text)).Select(x=>x.QuestionId).FirstOrDefault();
 
-      //if (!test.Any())
-      //{
-      //  await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
-      //  return;
-      //}
+      if (test==0)
+      {
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
+        return;
+      }
 
-      //var result = DialogBotData.DialogData.FirstOrDefault(x => x.Question.Contains(message.Text))?.Answers?.FirstOrDefault();
-      //await _botService.Client.SendTextMessageAsync(message.Chat.Id, result);
-
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
+      var result = DialogBotData.AnswerData.Where(x => x.QuestionId == test).FirstOrDefault();
+      if (result==null)
+      {
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
+        return;
+      }
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result.Answers.FirstOrDefault());
     }
   }
 }

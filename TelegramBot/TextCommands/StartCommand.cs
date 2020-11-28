@@ -21,7 +21,7 @@ namespace TelegramBot.TextCommands
         new[] {InlineKeyboardButton.WithCallbackData("Help!", TextCommandList.Help) }
       });
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Welcome! This is bot, bla-bla-bla. Click help to show more info", replyMarkup: inlineKeyboard);
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Welcome, {message.From.Username}! This is bot, bla-bla-bla. Click help to show more info", replyMarkup: inlineKeyboard);
     }
   }
 }
