@@ -5,7 +5,8 @@ using Telegram.Bot.Types;
 using TelegramBot.Services;
 using TelegramBot.Common;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.Commands;
+using TelegramBot.BotDialogData;
+using System.Linq;
 
 namespace TelegramBot.TextCommands
 {
@@ -21,29 +22,32 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      if (message.Text.Trim().ToLower() == TextCommandList.Wiki)
+      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
+
+      if (!currentSettings.IsWiki)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] {InlineKeyboardButton.WithCallbackData("Travel", TextCommandList.Wiki + " Travel") },
-          new[] {InlineKeyboardButton.WithCallbackData("Singing", TextCommandList.Wiki + " Singing") },
-          new[] {InlineKeyboardButton.WithCallbackData("Samara", TextCommandList.Wiki + " Samara") }
+          new[] {InlineKeyboardButton.WithCallbackData("Travel", "Travel") },
+          new[] {InlineKeyboardButton.WithCallbackData("Singing", "Singing") },
+          new[] {InlineKeyboardButton.WithCallbackData("Eagle", "Eagle") }
         });
 
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Also you can read articles from wiki in English. Exapmle: /wiki {yourRequest}", replyMarkup: inlineKeyboard);
+        currentSettings.IsWiki = true;
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of artice: ", replyMarkup: inlineKeyboard);
         return;
       }
+
       var baseUrl = "https://en.wikipedia.org/wiki/";
       var config = Configuration.Default.WithDefaultLoader().WithCss();
       var context = BrowsingContext.New(config);
-      var query = message.Text.Substring(5).Trim();
-      if (string.IsNullOrEmpty(query))
+      if (string.IsNullOrEmpty(message.Text))
       {
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Invalid request");
         return;
       }
 
-      var source = await context.OpenAsync(baseUrl+ query);
+      var source = await context.OpenAsync(baseUrl+ message.Text);
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
@@ -55,9 +59,9 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var keyboard = KeyboardBuilder.CreateHelpMenu();
-
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: keyboard);
+      currentSettings.IsWiki = false; ;
+      var exitKeyboard = KeyboardBuilder.CreateExitButton();
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
     }
   }
 }

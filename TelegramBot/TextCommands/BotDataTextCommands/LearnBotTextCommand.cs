@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotDialogData;
+using TelegramBot.Common;
 using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
@@ -23,42 +25,59 @@ namespace TelegramBot.TextCommands
         return;
       }
 
+      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
+
       if (message.Text== "/learn")
       {
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the question: ");
-        ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single().LearningState = 1;
+        currentSettings.LearningState = 1;
+        currentSettings.CurrentQuestionId = DialogBotData.QuestionsData.Count + 1;
+        return;
       }
 
-      var questionId = DialogBotData.QuestionsData.Count + 1;
-
-      if (ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single().LearningState == 1)
+      if (currentSettings.LearningState == 1)
       {
-        if (!DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text)).Any())
+        if (DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text.ToLower())).Any())
         {
-          var question = new QuestionsData { QuestionId = questionId, Questions = new List<string> { message.Text } };
-          DialogBotData.QuestionsData.Add(question);
+          await _botService.Client.SendTextMessageAsync(message.Chat.Id, "There is already such a question. Please, try again:");
+          return;    
         }
 
-        ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single().LearningState = 2;
+        var question = new QuestionsData { QuestionId = currentSettings.CurrentQuestionId, Questions = new List<string> { message.Text.ToLower() } };
+        DialogBotData.QuestionsData.Add(question);
+        currentSettings.LearningState = 2;
+
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the answer: ");
+        return;
       }
-      else if (ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single().LearningState == 2)
+      else if (message.Text == "/exit")
       {
-        if(!DialogBotData.AnswerData.Where(x => x.QuestionId== questionId).Any())
+        var aa = DialogBotData.QuestionsData;
+        var bb = DialogBotData.AnswerData;
+        currentSettings.LearningState = 0;
+
+        var exitKeyboard = KeyboardBuilder.CreateHelpMenu();
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Yeah!", replyMarkup: exitKeyboard);
+      }
+      else if (currentSettings.LearningState == 2)
+      {
+        if(!DialogBotData.AnswerData.Where(x => x.QuestionId== currentSettings.CurrentQuestionId).Any())
         {
-          var question = new QuestionsData { QuestionId = questionId, Questions = new List<string> { message.Text } };
-          DialogBotData.QuestionsData.Add(question);
+          var question = new AnswersData { QuestionId = currentSettings.CurrentQuestionId, Answers = new List<string> { message.Text.ToLower() } };
+          DialogBotData.AnswerData.Add(question);
         }
         else
         {
-          DialogBotData.AnswerData.Where(x => x.QuestionId == questionId).Single().Answers.Add(message.Text);
+          DialogBotData.AnswerData.Where(x => x.QuestionId == currentSettings.CurrentQuestionId).SingleOrDefault().Answers.Add(message.Text.ToLower());
         }
 
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Want to add another answer? (press /exit if you want to exit");
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        {
+          new[] {InlineKeyboardButton.WithCallbackData("Finish train ", "/exit") },
+        });
+
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Want to add another answer?", replyMarkup: inlineKeyboard);
       }
-      else if (message.Text == "/exit")
-        ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single().LearningState = 0;
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Yeah!");
     }
   }
 }
