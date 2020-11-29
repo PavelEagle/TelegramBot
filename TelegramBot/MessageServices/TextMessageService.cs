@@ -42,6 +42,7 @@ namespace TelegramBot.MessageTypes
             var str when str.ToLower().StartsWith(TextCommandList.LinkQuestions) => new TextMessageService(new LinkQuestionsTextCommand(botService), message),
             var str when str.ToLower().StartsWith(TextCommandList.SaveBotData) => new TextMessageService(new SavaBotDataTextCommand(botService), message),
             var str when str.ToLower().StartsWith(TextCommandList.SaveSettings) => new TextMessageService(new SaveBotSettingTextCommand(botService), message),
+            var str when str.ToLower().StartsWith(TextCommandList.SetVoice) => new TextMessageService(new VoiceSettingTextCommand(botService), message),
             _ => new TextMessageService(new DefaultTextCommand(botService), message)
           };
         }

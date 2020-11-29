@@ -5,6 +5,8 @@ using System.Linq;
 using TelegramBot.BotDialogData;
 using System.Collections.Generic;
 using System;
+using Telegram.Bot.Types.InputFiles;
+using System.IO;
 
 namespace TelegramBot.TextCommands
 {
@@ -18,23 +20,33 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
+      var resultMessage = string.Empty;
+      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
       var questionId = DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text.ToLower())).Select(x=>x.QuestionId).FirstOrDefault();
-
-      //var questionId = DialogBotData.QuestionsData.FirstOrDefault(x=>x.Questions.Where(x=>x.Contains(message.Text.ToUpper())).Any());
 
       if (questionId == 0)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
-        return;
+        resultMessage = "Sorry, i don't understand";
       }
 
-      var result = DialogBotData.AnswerData.Where(x => x.QuestionId == questionId).SingleOrDefault();
-      if (result==null)
+      var answerData = DialogBotData.AnswerData.Where(x => x.QuestionId == questionId).SingleOrDefault();
+      if (answerData == null)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Sorry, i don't understand");
-        return;
+        resultMessage = "Sorry, i don't understand";
       }
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, GetRandomAnswer(result.Answers));
+      else
+      {
+        resultMessage = GetRandomAnswer(answerData.Answers);
+      }
+      
+      if (currentSettings.VoiceAnswer) 
+      {
+        var voiceMessage = await TextToSpeech.ToSpeech(resultMessage);
+        await _botService.Client.SendAudioAsync(message.Chat.Id, new InputOnlineFile(new MemoryStream(voiceMessage)));
+        return;
+      };
+
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, resultMessage);
     }
 
     private string GetRandomAnswer(IList<string> answers)

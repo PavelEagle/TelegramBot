@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using ProtoBuf;
+using System.Collections.Generic;
 
 namespace TelegramBot.BotDialogData
 {
-  [XmlType]
+  [ProtoContract]
   public class QuestionsData
   {
-    [XmlElement(Order = 1)]
+    [ProtoMember(1)]
     public List<string> Questions { get; set; }
    
-    [XmlElement(Order = 2)]
+    [ProtoMember(2)]
     public long QuestionId { get; set; }
   }
 }

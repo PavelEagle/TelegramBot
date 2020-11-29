@@ -15,9 +15,9 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      var path = "BotData/answers-data.txt";
+      var path = "BotData/chat-settings.txt";
 
-      await DataService.SaveData(DialogBotData.QuestionsData, path);
+      await DataService.SaveData(ChatSettings.ChatSettingsData, path);
 
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Settings have been saved");
     }
