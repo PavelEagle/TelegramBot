@@ -4,7 +4,6 @@ using Telegram.Bot.Types;
 using TelegramBot.Services;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
-using TelegramBot.Commands;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.Common;
 using TelegramBot.BotDialogData;
@@ -15,9 +14,11 @@ namespace TelegramBot.TextCommands
   public class YoutubeSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    public YoutubeSearchTextCommand(IBotService botService)
+    private readonly YouTubeSearchConfiguration _searchConfiguration;
+    public YoutubeSearchTextCommand(IBotService botService, YouTubeSearchConfiguration configuration)
     {
       _botService = botService;
+      _searchConfiguration = configuration;
     }
     public async Task ProcessMessage(Message message)
     {
@@ -37,13 +38,11 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var cx = "65e3d895a76958419";
-      var apiKey = "AIzaSyD8bcAb-gJryXj3hZ_oeXq6T3Rih9hyUNA";
-      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = apiKey});
+      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = _searchConfiguration .ApiKey});
       var listRequest = svc.Cse.List();
       listRequest.Q = message.Text;
 
-      listRequest.Cx = cx;
+      listRequest.Cx = _searchConfiguration.CxKey;
       var search = await listRequest.ExecuteAsync();
 
       var keyboard = KeyboardBuilder.CreateExitButton();

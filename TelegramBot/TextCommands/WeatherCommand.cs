@@ -14,9 +14,11 @@ namespace TelegramBot.TextCommands
   public class WeatherCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    public WeatherCommand(IBotService botService)
+    private readonly WeatherApiConfiguration _weatherApiConfiguration;
+    public WeatherCommand(IBotService botService, WeatherApiConfiguration weatherApiConfiguration)
     {
       _botService = botService;
+      _weatherApiConfiguration = weatherApiConfiguration;
     }
 
     public async Task ProcessMessage(Message message)
@@ -39,10 +41,9 @@ namespace TelegramBot.TextCommands
       
       else
       {
-        var host = "http://api.openweathermap.org";
-        var uri = $"data/2.5/weather?q={message.Text}&appid=88ec93c8bc578fb7e09367b86bce7577";
+        var uri = $"data/2.5/weather?q={message.Text}&appid={_weatherApiConfiguration.ApiKey}";
 
-        var client = new RestClient(host);
+        var client = new RestClient(_weatherApiConfiguration.Host);
         var request = new RestRequest(uri, DataFormat.Json);
         var response = await client.ExecuteAsync(request);
         var json = JObject.Parse(response.Content);

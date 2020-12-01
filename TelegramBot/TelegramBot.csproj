@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BotData\**" />
+    <Content Remove="BotData\**" />
+    <EmbeddedResource Remove="BotData\**" />
+    <None Remove="BotData\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AngleSharp" Version="0.14.0" />
     <PackageReference Include="AngleSharp.Css" Version="0.14.2" />
     <PackageReference Include="BotSharp.Core" Version="0.4.0" />

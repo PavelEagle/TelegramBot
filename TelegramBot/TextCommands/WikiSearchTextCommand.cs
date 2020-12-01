@@ -14,10 +14,12 @@ namespace TelegramBot.TextCommands
   {
     private readonly IBotService _botService;
     private readonly HtmlParser _htmlParser;
-    public WikiSearchTextCommand(IBotService botService)
+    private readonly WikiSearchConfiguration _wikiSearchConfiguration;
+    public WikiSearchTextCommand(IBotService botService, WikiSearchConfiguration wikiSearchConfiguration)
     {
       _botService = botService;
       _htmlParser = new HtmlParser();
+      _wikiSearchConfiguration = wikiSearchConfiguration;
     }
 
     public async Task ProcessMessage(Message message)
@@ -38,7 +40,6 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var baseUrl = "https://en.wikipedia.org/wiki/";
       var config = Configuration.Default.WithDefaultLoader().WithCss();
       var context = BrowsingContext.New(config);
       if (string.IsNullOrEmpty(message.Text))
@@ -47,7 +48,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var source = await context.OpenAsync(baseUrl+ message.Text);
+      var source = await context.OpenAsync(_wikiSearchConfiguration .Url + message.Text);
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
