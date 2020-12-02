@@ -6,6 +6,7 @@ using RestSharp;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotDialogData;
+using TelegramBot.BotSettings;
 using TelegramBot.Common;
 using TelegramBot.Services;
 
@@ -14,11 +15,9 @@ namespace TelegramBot.TextCommands
   public class WeatherCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    private readonly WeatherApiConfiguration _weatherApiConfiguration;
-    public WeatherCommand(IBotService botService, WeatherApiConfiguration weatherApiConfiguration)
+    public WeatherCommand(IBotService botService)
     {
       _botService = botService;
-      _weatherApiConfiguration = weatherApiConfiguration;
     }
 
     public async Task ProcessMessage(Message message)
@@ -29,21 +28,24 @@ namespace TelegramBot.TextCommands
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-            new[] {InlineKeyboardButton.WithCallbackData("Samara", "Samara") },
-            new[] {InlineKeyboardButton.WithCallbackData("Saint-Petersburg", "Saint-Petersburg") },
-            new[] {InlineKeyboardButton.WithCallbackData("Moscow", "Moscow") }
+            new[] 
+            {
+              InlineKeyboardButton.WithCallbackData("Samara", "Samara"),
+              InlineKeyboardButton.WithCallbackData("Saint-Petersburg", "Saint-Petersburg"),
+              InlineKeyboardButton.WithCallbackData("Moscow", "Moscow")
+            }
         });
 
         currentSettings.IsWheather = true;
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the city: ", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the city or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
       
       else
       {
-        var uri = $"data/2.5/weather?q={message.Text}&appid={_weatherApiConfiguration.ApiKey}";
+        var uri = $"{RequestsConfiguration.Weather.Url}?q={message.Text}&appid={RequestsConfiguration.Weather.ApiKey}";
 
-        var client = new RestClient(_weatherApiConfiguration.Host);
+        var client = new RestClient(RequestsConfiguration.Weather.Host);
         var request = new RestRequest(uri, DataFormat.Json);
         var response = await client.ExecuteAsync(request);
         var json = JObject.Parse(response.Content);
@@ -71,7 +73,6 @@ namespace TelegramBot.TextCommands
         currentSettings.IsWheather = false;
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
       }
-      
     }
   }
 }

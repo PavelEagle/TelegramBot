@@ -20,14 +20,14 @@ namespace TelegramBot.Commands
     {
       return new Dictionary<string, string>
       {
-        { "Get weather info", Weather},
-        { "Search videos on youtube", YoutubeSearch},
-        { "Search article on wiki", Wiki},
-        { "Roll random number from 1 to 100", Roll},
-        { "Train Bot", LearnBot},
-        { "Save Data", SaveBotData},
-        { "Save Settings", SaveSettings},
-        { "Voice", SetVoice}
+        { Weather, "Get weather info"},
+        { YoutubeSearch, "Search videos on youtube"},
+        { Wiki, "Search article on wiki" },
+        { Roll, "Roll random number"},
+        { LearnBot, "Train Bot"},
+        { SaveBotData, "Save Data"},
+        { SaveSettings, "Save Settings"},
+        { SetVoice, "Voice"}
       };
     }
   }

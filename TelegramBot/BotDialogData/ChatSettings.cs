@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
 
 namespace TelegramBot.BotDialogData
 {
   public static class ChatSettings
   {
-    public static HashSet<ChatSettingsBotData> ChatSettingsData { get; set; }
+    public static ConcurrentBag<ChatSettingsBotData> ChatSettingsData { get; set; }
   }
 }

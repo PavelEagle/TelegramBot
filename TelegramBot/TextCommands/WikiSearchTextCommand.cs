@@ -7,6 +7,7 @@ using TelegramBot.Common;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotDialogData;
 using System.Linq;
+using TelegramBot.BotSettings;
 
 namespace TelegramBot.TextCommands
 {
@@ -14,12 +15,10 @@ namespace TelegramBot.TextCommands
   {
     private readonly IBotService _botService;
     private readonly HtmlParser _htmlParser;
-    private readonly WikiSearchConfiguration _wikiSearchConfiguration;
-    public WikiSearchTextCommand(IBotService botService, WikiSearchConfiguration wikiSearchConfiguration)
+    public WikiSearchTextCommand(IBotService botService)
     {
       _botService = botService;
       _htmlParser = new HtmlParser();
-      _wikiSearchConfiguration = wikiSearchConfiguration;
     }
 
     public async Task ProcessMessage(Message message)
@@ -30,13 +29,16 @@ namespace TelegramBot.TextCommands
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] {InlineKeyboardButton.WithCallbackData("Travel", "Travel") },
-          new[] {InlineKeyboardButton.WithCallbackData("Singing", "Singing") },
-          new[] {InlineKeyboardButton.WithCallbackData("Eagle", "Eagle") }
+          new[] 
+          {
+            InlineKeyboardButton.WithCallbackData("Travel", "Travel"),
+            InlineKeyboardButton.WithCallbackData("Singing", "Singing"),
+            InlineKeyboardButton.WithCallbackData("Eagle", "Eagle")
+          }
         });
 
         currentSettings.IsWiki = true;
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of artice: ", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of artice or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
 
@@ -48,7 +50,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var source = await context.OpenAsync(_wikiSearchConfiguration .Url + message.Text);
+      var source = await context.OpenAsync(RequestsConfiguration.Wiki.Url + message.Text);
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");

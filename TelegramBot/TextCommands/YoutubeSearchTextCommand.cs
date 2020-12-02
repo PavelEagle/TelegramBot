@@ -8,17 +8,16 @@ using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.Common;
 using TelegramBot.BotDialogData;
 using System.Linq;
+using TelegramBot.BotSettings;
 
 namespace TelegramBot.TextCommands
 {
   public class YoutubeSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    private readonly YouTubeSearchConfiguration _searchConfiguration;
-    public YoutubeSearchTextCommand(IBotService botService, YouTubeSearchConfiguration configuration)
+    public YoutubeSearchTextCommand(IBotService botService)
     {
       _botService = botService;
-      _searchConfiguration = configuration;
     }
     public async Task ProcessMessage(Message message)
     {
@@ -28,21 +27,24 @@ namespace TelegramBot.TextCommands
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] {InlineKeyboardButton.WithCallbackData("Dancing!", "Dancing") },
-          new[] {InlineKeyboardButton.WithCallbackData("Cats", "Cats") },
-          new[] {InlineKeyboardButton.WithCallbackData("Space", "Space") }
+          new[] 
+          {
+            InlineKeyboardButton.WithCallbackData("Dancing!", "Dancing"),
+            InlineKeyboardButton.WithCallbackData("Cats", "Cats"),
+            InlineKeyboardButton.WithCallbackData("Space", "Space")
+          }
         });
 
         currentSettings.IsYouTubeSearch = true;
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Yeah, you can see youtube videos! Exapmle: /youtube {yourRequest}", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Try to search or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
 
-      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = _searchConfiguration .ApiKey});
+      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = RequestsConfiguration.YouTubeSearch.ApiKey});
       var listRequest = svc.Cse.List();
       listRequest.Q = message.Text;
 
-      listRequest.Cx = _searchConfiguration.CxKey;
+      listRequest.Cx = RequestsConfiguration.YouTubeSearch.CxKey;
       var search = await listRequest.ExecuteAsync();
 
       var keyboard = KeyboardBuilder.CreateExitButton();

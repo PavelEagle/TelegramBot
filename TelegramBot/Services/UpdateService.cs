@@ -38,7 +38,7 @@ namespace TelegramBot.Services
 
         _messageType = message.Type switch
         {
-          MessageType.Text => TextMessageService.Create(_botService, message, _configuration),
+          MessageType.Text => TextMessageService.Create(_botService, message),
           MessageType.Photo => new PhotoMessageService(_botService, message),
           _ => new UnknownTypeService(_botService, message)
         };
