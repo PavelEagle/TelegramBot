@@ -15,6 +15,9 @@ namespace TelegramBot.Commands
     public const string SaveBotData = "/save-data";
     public const string SaveSettings = "/save-settings";
     public const string SetVoice = "/voice";
+    public const string GetSecretInfo = "/secret";
+    public const string SetSecretAccess = "/secret-access";
+    public const string AddSecretInfo = "/secret-add";
 
     public static Dictionary<string, string> GetHelpCommands()
     {
@@ -27,7 +30,10 @@ namespace TelegramBot.Commands
         { LearnBot, "Train Bot"},
         { SaveBotData, "Save Data"},
         { SaveSettings, "Save Settings"},
-        { SetVoice, "Voice"}
+        { SetVoice, "Voice"},
+        { GetSecretInfo, "Get secret info"},
+        { SetSecretAccess, "Set secret access"},
+        { AddSecretInfo, "Add secret info"}
       };
     }
   }

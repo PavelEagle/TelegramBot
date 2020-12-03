@@ -44,6 +44,8 @@ namespace TelegramBot.MessageTypes
             var str when str.ToLower().StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService), message),
             var str when str.ToLower().StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService), message),
             var str when str.ToLower().StartsWith(TextCommandList.YoutubeSearch) => new TextMessageService(new YoutubeSearchTextCommand(botService), message),
+            var str when str.ToLower().StartsWith(TextCommandList.GetSecretInfo) => new TextMessageService(new GetSecretInfoTextCommand(botService), message),
+            var str when str.ToLower().StartsWith(TextCommandList.SetSecretAccess) => new TextMessageService(new SetSecretAccessTextCommand(botService), message),
             _ => new TextMessageService(new DefaultTextCommand(botService), message)
           };
         }

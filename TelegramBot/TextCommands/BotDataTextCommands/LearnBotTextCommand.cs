@@ -52,8 +52,6 @@ namespace TelegramBot.TextCommands
       }
       else if (message.Text == "/exit")
       {
-        var aa = DialogBotData.QuestionsData;
-        var bb = DialogBotData.AnswerData;
         currentSettings.LearningState = 0;
 
         var exitKeyboard = KeyboardBuilder.CreateHelpMenu();
