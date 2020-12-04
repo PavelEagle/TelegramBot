@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TelegramBot.BotDialogData;
 
@@ -23,18 +20,24 @@ namespace TelegramBot
 
     private static async Task AppInit()
     {
-      //  var answersDataFilePath = "BotData/answers-data.txt";
-      //  DialogBotData.AnswerData = await DataService.LodaData<ConcurrentBag<AnswersData>>(answersDataFilePath);
+      var dialogDataFilePath = "BotData/dialog-data.txt";
+      CurrentDialogBotData.DialogBotData = await DataService.LoadData<DialogBotData>(dialogDataFilePath);
 
-      //  var questionsDataFilePath = "BotData/questions-data.txt";
-      //  DialogBotData.QuestionsData = await DataService.LodaData<ConcurrentBag<QuestionsData>>(questionsDataFilePath);
+      if (CurrentDialogBotData.DialogBotData.QuestionsData != null)
+        CurrentDialogBotData.DialogBotData.Count = CurrentDialogBotData.DialogBotData.QuestionsData.Count;
 
-      //  if (DialogBotData.QuestionsData!= null)
-      //    DialogBotData.Count = DialogBotData.QuestionsData.Count;
+      if (CurrentDialogBotData.DialogBotData.Count == 0)
+      {
+        CurrentDialogBotData.DialogBotData = new DialogBotData() { AnswerData = new ConcurrentDictionary<long, ConcurrentQueue<string>>(), QuestionsData = new ConcurrentDictionary<long, ConcurrentQueue<string>>()};
+      }
+      
+      var chatSettingsFilePath = "BotData/chat-settings.txt";
+      ChatSettings.ChatSettingsData = await DataService.LoadData<ConcurrentQueue<ChatSettingsBotData>>(chatSettingsFilePath);
 
-      //  var chatSettingsFilePath = "BotData/chat-settings.txt";
-      //  ChatSettings.ChatSettingsData = await DataService.LodaData<ConcurrentBag<ChatSettingsBotData>>(chatSettingsFilePath);
-      //}
+      if (ChatSettings.ChatSettingsData == null)
+      {
+        ChatSettings.ChatSettingsData = new ConcurrentQueue<ChatSettingsBotData>();
+      }
     }
   }
 }

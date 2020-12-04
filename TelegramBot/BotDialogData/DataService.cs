@@ -14,7 +14,7 @@ namespace TelegramBot.BotDialogData
       }
     }
 
-    public static async Task<T> LodaData<T>(string filePath)
+    public static async Task<T> LoadData<T>(string filePath)
     {
       if (!File.Exists(filePath))
       {

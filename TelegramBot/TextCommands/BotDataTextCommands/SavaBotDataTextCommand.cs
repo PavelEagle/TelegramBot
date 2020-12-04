@@ -15,15 +15,14 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      var pathAnswersData = "BotData/answers-data.txt";
-      var pathQuestionsData = "BotData/questions-data.txt";
+      var dialogData = "BotData/dialog-data.txt";
 
-      await DataService.SaveData(DialogBotData.AnswerData, pathAnswersData);
-      if (DialogBotData.AnswerData.Count != DialogBotData.QuestionsData.Count)
+      await DataService.SaveData(CurrentDialogBotData.DialogBotData, dialogData);
+
+      if (CurrentDialogBotData.DialogBotData.AnswerData.Count != CurrentDialogBotData.DialogBotData.QuestionsData.Count)
       {
         // add delete logic
       }
-      await DataService.SaveData(DialogBotData.QuestionsData, pathQuestionsData);
 
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Data have been saved");
     }

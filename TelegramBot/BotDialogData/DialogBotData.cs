@@ -1,11 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using ProtoBuf;
+using System.Collections.Concurrent;
 
 namespace TelegramBot.BotDialogData
 {
-  public static class DialogBotData
+  [ProtoContract]
+  public class DialogBotData
   {
-    public static ConcurrentDictionary<long, ConcurrentQueue<string>> AnswerData { get; set; }
-    public static ConcurrentDictionary<long, ConcurrentQueue<string>> QuestionsData { get; set; }
-    public static int Count { get; set; }
+    [ProtoMember(1)]
+    public ConcurrentDictionary<long, ConcurrentQueue<string>> AnswerData { get; set; }
+    [ProtoMember(2)]
+    public ConcurrentDictionary<long, ConcurrentQueue<string>> QuestionsData { get; set; }
+    public int Count { get; set; }
   }
 }
