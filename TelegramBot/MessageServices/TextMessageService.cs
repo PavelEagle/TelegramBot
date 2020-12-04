@@ -23,7 +23,7 @@ namespace TelegramBot.MessageTypes
     public static TextMessageService Create(IBotService botService, Message message)
     {
       if (!ChatSettings.ChatSettingsData.Where(x=>x.ChatId==message.Chat.Id).Any()) {
-        ChatSettings.ChatSettingsData.Add(new ChatSettingsBotData { ChatId=message.Chat.Id , LearningState = 0, VoiceAnswer = false});
+        //ChatSettings.ChatSettingsData.Add(new ChatSettingsBotData { ChatId=message.Chat.Id , LearningState = 0, VoiceAnswer = false});
       }
 
       var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();

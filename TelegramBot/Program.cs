@@ -18,25 +18,23 @@ namespace TelegramBot
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-              webBuilder.UseStartup<Startup>();
-            });
+      Host.CreateDefaultBuilder(args)
+        .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 
     private static async Task AppInit()
     {
-      var answersDataFilePath = "BotData/answers-data.txt";
-      DialogBotData.AnswerData = await DataService.LodaData<ConcurrentBag<AnswersData>>(answersDataFilePath);
+      //  var answersDataFilePath = "BotData/answers-data.txt";
+      //  DialogBotData.AnswerData = await DataService.LodaData<ConcurrentBag<AnswersData>>(answersDataFilePath);
 
-      var questionsDataFilePath = "BotData/questions-data.txt";
-      DialogBotData.QuestionsData = await DataService.LodaData<ConcurrentBag<QuestionsData>>(questionsDataFilePath);
+      //  var questionsDataFilePath = "BotData/questions-data.txt";
+      //  DialogBotData.QuestionsData = await DataService.LodaData<ConcurrentBag<QuestionsData>>(questionsDataFilePath);
 
-      if (DialogBotData.QuestionsData!= null)
-        DialogBotData.Count = DialogBotData.QuestionsData.Count;
+      //  if (DialogBotData.QuestionsData!= null)
+      //    DialogBotData.Count = DialogBotData.QuestionsData.Count;
 
-      var chatSettingsFilePath = "BotData/chat-settings.txt";
-      ChatSettings.ChatSettingsData = await DataService.LodaData<ConcurrentBag<ChatSettingsBotData>>(chatSettingsFilePath);
+      //  var chatSettingsFilePath = "BotData/chat-settings.txt";
+      //  ChatSettings.ChatSettingsData = await DataService.LodaData<ConcurrentBag<ChatSettingsBotData>>(chatSettingsFilePath);
+      //}
     }
   }
 }

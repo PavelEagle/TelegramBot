@@ -22,22 +22,22 @@ namespace TelegramBot.TextCommands
     {
       var resultMessage = string.Empty;
       var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
-      var questionId = DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text.ToLower())).Select(x=>x.QuestionId).FirstOrDefault();
+      //var questionId = DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text.ToLower())).Select(x=>x.QuestionId).FirstOrDefault();
 
-      if (questionId == 0)
-      {
-        resultMessage = "Sorry, i don't understand";
-      }
+      //if (questionId == 0)
+      //{
+      //  resultMessage = "Sorry, i don't understand";
+      //}
 
-      var answerData = DialogBotData.AnswerData.Where(x => x.QuestionId == questionId).SingleOrDefault();
-      if (answerData == null)
-      {
-        resultMessage = "Sorry, i don't understand";
-      }
-      else
-      {
-        resultMessage = GetRandomAnswer(answerData.Answers);
-      }
+      ////var answerData = DialogBotData.AnswerData.Where(x => x.QuestionId == questionId).SingleOrDefault();
+      //if (answerData == null)
+      //{
+      //  resultMessage = "Sorry, i don't understand";
+      //}
+      //else
+      //{
+      //  resultMessage = GetRandomAnswer(answerData.Answers);
+      //}
       
       if (currentSettings.VoiceAnswer) 
       {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
@@ -25,7 +26,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
+      var currentSettings = ChatSettings.ChatSettingsData.Single(x => x.ChatId == message.Chat.Id);
 
       if (message.Text== "/learn")
       {
@@ -37,20 +38,21 @@ namespace TelegramBot.TextCommands
 
       if (currentSettings.LearningState == 1)
       {
-        if (DialogBotData.QuestionsData.Where(x => x.Questions.Contains(message.Text.ToLower())).Any())
+        if (DialogBotData.QuestionsData.Any(x => x.Value.Contains(message.Text.ToLower())))
         {
           await _botService.Client.SendTextMessageAsync(message.Chat.Id, "There is already such a question. Please, try again:");
           return;    
         }
 
-        var question = new QuestionsData { QuestionId = currentSettings.CurrentQuestionId, Questions = new List<string> { message.Text.ToLower() } };
-        DialogBotData.QuestionsData.Add(question);
+        DialogBotData.QuestionsData.AddOrUpdate(currentSettings.CurrentQuestionId, new ConcurrentQueue<string>(new List<string>() { message.Text.ToLower() }), 
+          (key, oldValue)=> new ConcurrentQueue<string>(new List<string>() { message.Text.ToLower() }));
         currentSettings.LearningState = 2;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the answer: ");
         return;
       }
-      else if (message.Text == "/exit")
+
+      if (message.Text == "/exit")
       {
         currentSettings.LearningState = 0;
 
@@ -59,14 +61,14 @@ namespace TelegramBot.TextCommands
       }
       else if (currentSettings.LearningState == 2)
       {
-        if(!DialogBotData.AnswerData.Where(x => x.QuestionId== currentSettings.CurrentQuestionId).Any())
+        if(!DialogBotData.AnswerData.Any(x => x.Key== currentSettings.CurrentQuestionId))
         {
           var question = new AnswersData { QuestionId = currentSettings.CurrentQuestionId, Answers = new List<string> { message.Text.ToLower() } };
-          DialogBotData.AnswerData.Add(question);
+          //DialogBotData.AnswerData.Add(question);
         }
         else
         {
-          DialogBotData.AnswerData.Where(x => x.QuestionId == currentSettings.CurrentQuestionId).SingleOrDefault().Answers.Add(message.Text.ToLower());
+          //DialogBotData.AnswerData.Where(x => x.QuestionId == currentSettings.CurrentQuestionId).SingleOrDefault().Answers.Add(message.Text.ToLower());
         }
 
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
