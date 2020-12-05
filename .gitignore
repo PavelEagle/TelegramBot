@@ -66,6 +66,10 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+# Images
+*.jpg
+*.jpeg
+
 # StyleCop
 StyleCopReport.xml
 
