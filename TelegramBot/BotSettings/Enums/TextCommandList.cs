@@ -21,6 +21,7 @@ namespace TelegramBot.Enums
     public const string GetSecretInfo = "/secret";
     public const string Exit = "/exit";
 
+    // dictionary for create buttons
     public static Dictionary<string, string> HelpCommands = new Dictionary<string, string>
       {
         { Api, "Api"},

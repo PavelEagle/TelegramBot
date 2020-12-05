@@ -31,7 +31,7 @@ namespace TelegramBot.Common
       var document = new HtmlDocument();
       document.LoadHtml(data);
 
-      var acceptableTags = new[] {"strong", "em", "u"};
+      var acceptableTags = new[] {"strong", "em", "u"}; // tags that will not be removed
 
       var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
       while (nodes.Count > 0)

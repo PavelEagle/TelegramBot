@@ -20,6 +20,12 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
+      if (_chatSettingsBotData.AccountName != BotConstants.AccountName.Admin)
+      {
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Denied!");
+        return;
+      }
+
       if (message.Text == TextCommandList.RemoveQuestion)
       {
         _chatSettingsBotData.TrainingAction = nameof(TrainingActions.Remove);

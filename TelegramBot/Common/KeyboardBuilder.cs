@@ -35,7 +35,6 @@ namespace TelegramBot.Common
       });
     }
 
-
     public static InlineKeyboardMarkup CreateAdminHelpMenu()
     {
       var keyboard = CreateHelpMenu().InlineKeyboard.ToList();

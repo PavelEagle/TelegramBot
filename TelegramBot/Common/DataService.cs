@@ -15,6 +15,7 @@ namespace TelegramBot.Common
       if (CurrentDialogBotData.DialogBotData.QuestionsData != null)
         CurrentDialogBotData.DialogBotData.Count = CurrentDialogBotData.DialogBotData.QuestionsData.Count;
 
+      // initialize if data is empty
       if (CurrentDialogBotData.DialogBotData.Count == 0)
       {
         CurrentDialogBotData.DialogBotData = new DialogBotData() { AnswerData = new ConcurrentDictionary<long, ConcurrentQueue<string>>(), QuestionsData = new ConcurrentDictionary<long, ConcurrentQueue<string>>() };
@@ -27,6 +28,7 @@ namespace TelegramBot.Common
     {
       var difference = CurrentDialogBotData.DialogBotData.QuestionsData.Count - CurrentDialogBotData.DialogBotData.AnswerData.Count;
 
+      // delete unfinished bot data before save
       if (difference > 0)
       {
         for (var i = 0; i < difference; i++)

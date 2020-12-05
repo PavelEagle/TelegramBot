@@ -16,7 +16,6 @@ namespace TelegramBot.Controllers
       _updateService = updateService;
     }
 
-    // POST api/update
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Update update)
     {

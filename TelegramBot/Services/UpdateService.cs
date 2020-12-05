@@ -22,6 +22,7 @@ namespace TelegramBot.Services
       if (update.Type != UpdateType.Message && update.Type != UpdateType.CallbackQuery)
         return;
 
+      // callback from buttons
       if (update.Type == UpdateType.CallbackQuery)
       {
         _logger.LogInformation("Received Callback from {0}", update.CallbackQuery.Message.Chat.Id);
@@ -34,9 +35,9 @@ namespace TelegramBot.Services
 
         _messageType = message.Type switch
         {
-          MessageType.Text => TextMessageService.Create(_botService, message),
-          MessageType.Photo => new PhotoMessageService(_botService, message),
-          _ => (IMessageService) new UnknownTypeService(_botService, message)
+          MessageType.Text => TextMessageService.Create(_botService, message), 
+          MessageType.Photo => new PhotoMessageService(_botService, message), 
+          _ => (IMessageService) new UnknownTypeService(_botService, message) 
         };
       }
       

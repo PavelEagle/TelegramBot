@@ -10,10 +10,10 @@ namespace TelegramBot.BotData
     [ProtoMember(2)]
     public string AccountName { get; set; }
     [ProtoMember(3)]
-    public bool VoiceAnswer { get; set; }
-    public int LearningState { get; set; }   // Learning State: 0 - default chat, 1 - enter question, 2 - enter answer
-    public string TrainingAction { get; set; }
-    public long CurrentQuestionId { get; set; }
+    public bool VoiceAnswer { get; set; }  //voice answer setting
+    public int LearningState { get; set; } // 0 - no train, 1 and 2 - train action
+    public string TrainingAction { get; set; }  //train actions in enum TrainingActions.cs
+    public long CurrentQuestionId { get; set; } // question Id in bot train mode
     public bool WeatherApiEnable { get; set; }
     public bool WikiApiEnable { get; set; }
     public bool YouTubeSearchApiEnable { get; set; }
