@@ -1,5 +1,6 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.Commands;
+﻿using System.Linq;
+using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.Enums;
 
 namespace TelegramBot.Common
 {
@@ -15,98 +16,38 @@ namespace TelegramBot.Common
 
     public static InlineKeyboardMarkup CreateHelpMenu()
     {
-      var buttonList = TextCommandList.GetHelpCommands();
-
       return new InlineKeyboardMarkup(new[]
       {
         new[]
         {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Weather], TextCommandList.Weather),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.YoutubeSearch], TextCommandList.YoutubeSearch)
+          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Api], TextCommandList.Api),
+          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Roll], TextCommandList.Roll)
         },
         new[]
         {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Wiki], TextCommandList.Wiki),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Roll], TextCommandList.Roll)
+          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.SaveBotData], TextCommandList.SaveBotData),
+          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.SetVoice], TextCommandList.SetVoice)
         },
         new [] 
         {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.LearnBot], TextCommandList.LearnBot) 
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveBotData], TextCommandList.SaveBotData),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveSettings], TextCommandList.SaveSettings),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SetVoice], TextCommandList.SetVoice)
+          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.TrainBot], TextCommandList.TrainBot) 
         }
       });
     }
 
-    public static InlineKeyboardMarkup CreateHelpMenuWithSecretAccess()
-    {
-      var buttonList = TextCommandList.GetHelpCommands();
-
-      return new InlineKeyboardMarkup(new[]
-      {
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Weather], TextCommandList.Weather),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.YoutubeSearch], TextCommandList.YoutubeSearch)
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Wiki], TextCommandList.Wiki),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Roll], TextCommandList.Roll)
-        },
-        new []
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.LearnBot], TextCommandList.LearnBot)
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveBotData], TextCommandList.SaveBotData),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveSettings], TextCommandList.SaveSettings),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SetVoice], TextCommandList.SetVoice)
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.GetSecretInfo], TextCommandList.GetSecretInfo)
-        }
-      });
-    }
 
     public static InlineKeyboardMarkup CreateAdminHelpMenu()
     {
-      var buttonList = TextCommandList.GetHelpCommands();
+      var keyboard = CreateHelpMenu().InlineKeyboard.ToList();
 
-      return new InlineKeyboardMarkup(new[]
+      keyboard.RemoveAt(keyboard.Count-1);
+      keyboard.Add(new[]
       {
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Weather], TextCommandList.Weather),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.YoutubeSearch], TextCommandList.YoutubeSearch)
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Wiki], TextCommandList.Wiki),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.Roll], TextCommandList.Roll)
-        },
-        new []
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.LearnBot], TextCommandList.LearnBot)
-        },
-        new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveBotData], TextCommandList.SaveBotData),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SaveSettings], TextCommandList.SaveSettings),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SetVoice], TextCommandList.SetVoice)
-        },
-         new[]
-        {
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.SetSecretAccess], TextCommandList.SetSecretAccess),
-          InlineKeyboardButton.WithCallbackData(buttonList[TextCommandList.GetSecretInfo], TextCommandList.GetSecretInfo)
-        }
+        InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.TrainBot], TextCommandList.TrainBot),
+        InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.GetSecretInfo], TextCommandList.GetSecretInfo)
       });
+
+      return new InlineKeyboardMarkup(keyboard);
     }
   }
 }

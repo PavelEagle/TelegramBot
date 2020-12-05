@@ -1,7 +1,7 @@
 ﻿using ProtoBuf;
 using System.Collections.Concurrent;
 
-namespace TelegramBot.BotDialogData
+namespace TelegramBot.BotData
 {
   [ProtoContract]
   public class DialogBotData

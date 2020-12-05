@@ -2,20 +2,24 @@
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 using System.Linq;
-using TelegramBot.BotDialogData;
 using System.Collections.Generic;
 using System;
 using Telegram.Bot.Types.InputFiles;
 using System.IO;
+using TelegramBot.BotData;
+using TelegramBot.Common;
 
 namespace TelegramBot.TextCommands
 {
   public class DefaultTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    public DefaultTextCommand(IBotService botService)
+    private readonly ChatSettingsBotData _chatSettingsBotData;
+
+    public DefaultTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
     {
       _botService = botService;
+      _chatSettingsBotData = chatSettingsBotData;
     }
 
     public async Task ProcessMessage(Message message)
@@ -26,8 +30,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var resultMessage = string.Empty;
-      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
+      string resultMessage;
       var questionId = CurrentDialogBotData.DialogBotData.QuestionsData.Where(x => x.Value.Contains(message.Text.ToLower())).Select(x=>x.Key).FirstOrDefault();
 
       if (questionId == 0)
@@ -36,7 +39,7 @@ namespace TelegramBot.TextCommands
       }
       else
       {
-        var answerData = CurrentDialogBotData.DialogBotData.AnswerData.Where(x => x.Key == questionId).SingleOrDefault();
+        var answerData = CurrentDialogBotData.DialogBotData.AnswerData.SingleOrDefault(x => x.Key == questionId);
         if (answerData.Value.Count == 0)
         {
           resultMessage = "Sorry, i don't understand";
@@ -44,7 +47,7 @@ namespace TelegramBot.TextCommands
         resultMessage = GetRandomAnswer(answerData.Value);
       }
 
-      if (currentSettings.VoiceAnswer) 
+      if (_chatSettingsBotData.VoiceAnswer) 
       {
         var voiceMessage = await TextToSpeech.ToSpeech(resultMessage);
         await _botService.Client.SendAudioAsync(message.Chat.Id, new InputOnlineFile(new MemoryStream(voiceMessage)));
@@ -54,7 +57,7 @@ namespace TelegramBot.TextCommands
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, resultMessage);
     }
 
-    private string GetRandomAnswer(IEnumerable<string> answers)
+    private static string GetRandomAnswer(IEnumerable<string> answers)
     {
       var random = new Random();
       return answers.ElementAt(random.Next(answers.Count()));

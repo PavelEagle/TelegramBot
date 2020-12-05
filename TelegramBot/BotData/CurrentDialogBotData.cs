@@ -1,4 +1,4 @@
-﻿namespace TelegramBot.BotDialogData
+﻿namespace TelegramBot.BotData
 {
   public static class CurrentDialogBotData
   {

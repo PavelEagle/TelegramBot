@@ -1,19 +1,19 @@
 ﻿using System.Threading.Tasks;
 using RestSharp;
-using ApiConfgiuration = TelegramBot.BotSettings.RequestsConfiguration.TextToSpeech; 
+using ApiConfiguration = TelegramBot.Enums.BotConstants.TextToSpeech; 
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.Common
 {
   public static class TextToSpeech
   {
-    public async static Task<byte[]> ToSpeech(string message)
+    public static async Task<byte[]> ToSpeech(string message)
     {
       var result = message.Replace(" ", "%20").Replace(",", "%2C");
-      var client = new RestClient($"{ApiConfgiuration.Url}/?key={ApiConfgiuration.ApiKey}&" +
-        $"src={result}!&hl={ApiConfgiuration.Language}&r=0&c={ApiConfgiuration.AudioFormat}&f={ApiConfgiuration.AudioFormat}");
+      var client = new RestClient($"{ApiConfiguration.Url}/?key={ApiConfiguration.ApiKey}&" +
+        $"src={result}!&hl={ApiConfiguration.Language}&r=0&c={ApiConfiguration.AudioFormat}&f={ApiConfiguration.AudioSettings}");
       var request = new RestRequest(Method.GET);
-      request.AddHeader("x-rapidapi-key", ApiConfgiuration.RapidApiKey);
-      request.AddHeader("x-rapidapi-host", ApiConfgiuration.RapidApiHost);
+      request.AddHeader("x-rapidapi-key", ApiConfiguration.RapidApiKey);
+      request.AddHeader("x-rapidapi-host", ApiConfiguration.RapidApiHost);
       var response = await client.ExecuteAsync(request);
 
       return response.RawBytes;

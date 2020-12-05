@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 
-namespace TelegramBot.BotDialogData
+namespace TelegramBot.BotData
 {
   [ProtoContract]
   public class ChatSettingsBotData
@@ -10,13 +10,12 @@ namespace TelegramBot.BotDialogData
     [ProtoMember(2)]
     public string AccountName { get; set; }
     [ProtoMember(3)]
-    public bool SecretInfoAccess { get; set; }
-    [ProtoMember(4)]
     public bool VoiceAnswer { get; set; }
     public int LearningState { get; set; }   // Learning State: 0 - default chat, 1 - enter question, 2 - enter answer
-    public int CurrentQuestionId { get; set; }
-    public bool IsWheather { get; set; }
-    public bool IsWiki { get; set; }
-    public bool IsYouTubeSearch { get; set; }
+    public string TrainingAction { get; set; }
+    public long CurrentQuestionId { get; set; }
+    public bool WeatherApiEnable { get; set; }
+    public bool WikiApiEnable { get; set; }
+    public bool YouTubeSearchApiEnable { get; set; }
   }
 }

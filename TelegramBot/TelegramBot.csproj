@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="BotData\**" />
-    <Content Remove="BotData\**" />
-    <EmbeddedResource Remove="BotData\**" />
-    <None Remove="BotData\**" />
+    <Compile Remove="data\**" />
+    <Content Remove="data\**" />
+    <EmbeddedResource Remove="data\**" />
+    <None Remove="data\**" />
   </ItemGroup>
 
   <ItemGroup>

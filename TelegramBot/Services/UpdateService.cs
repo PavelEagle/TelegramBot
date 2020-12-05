@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using TelegramBot.MessageTypes;
 
 namespace TelegramBot.Services
 {
@@ -12,13 +10,11 @@ namespace TelegramBot.Services
     private readonly IBotService _botService;
     private readonly ILogger<UpdateService> _logger;
     private IMessageService _messageType;
-    private readonly IConfiguration _configuration;
 
-    public UpdateService(IBotService botService, ILogger<UpdateService> logger, IConfiguration configuration)
+    public UpdateService(IBotService botService, ILogger<UpdateService> logger)
     {
       _botService = botService;
       _logger = logger;
-      _configuration = configuration;
     }
 
     public async Task EchoAsync(Update update)
@@ -29,7 +25,7 @@ namespace TelegramBot.Services
       if (update.Type == UpdateType.CallbackQuery)
       {
         _logger.LogInformation("Received Callback from {0}", update.CallbackQuery.Message.Chat.Id);
-        _messageType = TextMessageService.Create(_botService, update.CallbackQuery, _configuration);
+        _messageType = TextMessageService.Create(_botService, update.CallbackQuery);
       }
       else
       {
@@ -40,7 +36,7 @@ namespace TelegramBot.Services
         {
           MessageType.Text => TextMessageService.Create(_botService, message),
           MessageType.Photo => new PhotoMessageService(_botService, message),
-          _ => new UnknownTypeService(_botService, message)
+          _ => (IMessageService) new UnknownTypeService(_botService, message)
         };
       }
       

@@ -5,25 +5,25 @@ using TelegramBot.Services;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramBot.BotData;
 using TelegramBot.Common;
-using TelegramBot.BotDialogData;
-using System.Linq;
-using TelegramBot.BotSettings;
+using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
   public class YoutubeSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    public YoutubeSearchTextCommand(IBotService botService)
+    private readonly ChatSettingsBotData _chatSettingsBotData;
+
+    public YoutubeSearchTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
     {
       _botService = botService;
+      _chatSettingsBotData = chatSettingsBotData;
     }
     public async Task ProcessMessage(Message message)
     {
-      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
-
-      if (!currentSettings.IsYouTubeSearch)
+      if (!_chatSettingsBotData.YouTubeSearchApiEnable)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -35,16 +35,16 @@ namespace TelegramBot.TextCommands
           }
         });
 
-        currentSettings.IsYouTubeSearch = true;
+        _chatSettingsBotData.YouTubeSearchApiEnable = true;
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Try to search or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
 
-      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = RequestsConfiguration.YouTubeSearch.ApiKey});
+      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = BotConstants.YouTubeSearch.ApiKey});
       var listRequest = svc.Cse.List();
       listRequest.Q = message.Text;
 
-      listRequest.Cx = RequestsConfiguration.YouTubeSearch.CxKey;
+      listRequest.Cx = BotConstants.YouTubeSearch.CxKey;
       var search = await listRequest.ExecuteAsync();
 
       var keyboard = KeyboardBuilder.CreateExitButton();
@@ -55,10 +55,17 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      currentSettings.IsYouTubeSearch = false;
-      for (var index = 0; index < Math.Min(search.Items.Count, 3); index++)
+      _chatSettingsBotData.YouTubeSearchApiEnable = false;
+      for (var i = 0; i < Math.Min(search.Items.Count, 3); i++)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[index].Link, replyMarkup: keyboard);
+        if (i == Math.Min(search.Items.Count, 3) - 1)
+        {
+          var exitKeyboard = KeyboardBuilder.CreateExitButton();
+          await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link, replyMarkup: exitKeyboard);
+          break;
+        }
+
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link);
       }
     }
   }

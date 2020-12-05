@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using TelegramBot.BotDialogData;
+using TelegramBot.BotData;
 using TelegramBot.Common;
 using TelegramBot.Services;
 
@@ -10,23 +9,25 @@ namespace TelegramBot.TextCommands
   public class VoiceSettingTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
-    public VoiceSettingTextCommand(IBotService botService)
+    private readonly ChatSettingsBotData _chatSettingsBotData;
+
+    public VoiceSettingTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
     {
       _botService = botService;
+      _chatSettingsBotData = chatSettingsBotData;
     }
     public async Task ProcessMessage(Message message)
     {
-      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
-      var infoMessage = string.Empty;
+      string infoMessage;
 
-      if (!currentSettings.VoiceAnswer)
+      if (!_chatSettingsBotData.VoiceAnswer)
       {
-        currentSettings.VoiceAnswer = true;
+        _chatSettingsBotData.VoiceAnswer = true;
         infoMessage = "Voice: On";
       }
       else
       {
-        currentSettings.VoiceAnswer = false;
+        _chatSettingsBotData.VoiceAnswer = false;
         infoMessage = "Voice: Off";
       }
 

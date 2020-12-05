@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace TelegramBot.MessageTypes
+namespace TelegramBot.Services
 {
   internal interface IMessageService
   {

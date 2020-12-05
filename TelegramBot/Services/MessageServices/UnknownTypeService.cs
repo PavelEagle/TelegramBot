@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using TelegramBot.Services;
 
-namespace TelegramBot.MessageTypes
+namespace TelegramBot.Services
 {
   public class UnknownTypeService: IMessageService
   {

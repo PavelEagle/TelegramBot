@@ -1,6 +1,6 @@
-﻿namespace TelegramBot.BotSettings
+﻿namespace TelegramBot.Enums
 {
-  public static class RequestsConfiguration
+  public static class BotConstants
   {
     internal class Weather
     {
@@ -29,6 +29,17 @@
     internal class Wiki
     {
       public const string Url = "https://en.wikipedia.org/wiki/";
+    }
+
+    internal class AccountName
+    {
+      public const string Admin = "PavelEagle";
+    }
+
+    internal class Paths
+    {
+      public const string DialogData = "data/dialog-data.txt";
+      public const string Settings = "data/chat-settings.txt";
     }
   }
 }

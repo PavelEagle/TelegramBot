@@ -5,27 +5,26 @@ using Telegram.Bot.Types;
 using TelegramBot.Services;
 using TelegramBot.Common;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.BotDialogData;
-using System.Linq;
-using TelegramBot.BotSettings;
+using TelegramBot.BotData;
+using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
   public class WikiSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
+    private readonly ChatSettingsBotData _chatSettingsBotData;
     private readonly HtmlParser _htmlParser;
-    public WikiSearchTextCommand(IBotService botService)
+    public WikiSearchTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
     {
       _botService = botService;
+      _chatSettingsBotData = chatSettingsBotData;
       _htmlParser = new HtmlParser();
     }
 
     public async Task ProcessMessage(Message message)
     {
-      var currentSettings = ChatSettings.ChatSettingsData.Where(x => x.ChatId == message.Chat.Id).Single();
-
-      if (!currentSettings.IsWiki)
+      if (!_chatSettingsBotData.WikiApiEnable)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -37,8 +36,8 @@ namespace TelegramBot.TextCommands
           }
         });
 
-        currentSettings.IsWiki = true;
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of artice or choose from list: ", replyMarkup: inlineKeyboard);
+        _chatSettingsBotData.WikiApiEnable = true;
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of article or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
 
@@ -50,7 +49,7 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      var source = await context.OpenAsync(RequestsConfiguration.Wiki.Url + message.Text);
+      var source = await context.OpenAsync(BotConstants.Wiki.Url + message.Text);
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
@@ -62,7 +61,8 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      currentSettings.IsWiki = false; ;
+      _chatSettingsBotData.WikiApiEnable = false; 
+
       var exitKeyboard = KeyboardBuilder.CreateExitButton();
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
     }
