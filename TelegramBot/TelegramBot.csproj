@@ -6,9 +6,13 @@
 
   <ItemGroup>
     <Compile Remove="data\**" />
+    <Compile Remove="photos\**" />
     <Content Remove="data\**" />
+    <Content Remove="photos\**" />
     <EmbeddedResource Remove="data\**" />
+    <EmbeddedResource Remove="photos\**" />
     <None Remove="data\**" />
+    <None Remove="photos\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +24,7 @@
     <PackageReference Include="HttpToSocks5Proxy" Version="1.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.9" />
     <PackageReference Include="protobuf-net" Version="3.0.62" />
+    <PackageReference Include="Quartz" Version="3.2.3" />
     <PackageReference Include="RestSharp" Version="106.11.7" />
     <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
     <PackageReference Include="Telegram.Bot" Version="15.7.1" />

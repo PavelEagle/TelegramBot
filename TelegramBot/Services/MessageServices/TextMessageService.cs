@@ -67,9 +67,9 @@ namespace TelegramBot.Services
       };
     }
 
-    // create message from callback
     public static TextMessageService Create(IBotService botService, CallbackQuery callbackQuery)
     {
+      // create message from callback
       var message = callbackQuery.Message;
       message.Text = callbackQuery.Data;
       return Create(botService, message);

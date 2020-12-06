@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TelegramBot.Quartz;
 using TelegramBot.Services;
 
 namespace TelegramBot
@@ -20,6 +21,7 @@ namespace TelegramBot
       services.AddScoped<IUpdateService, UpdateService>();
       services.AddTransient<IBotService, BotService>();
       services.Configure<BotConfiguration>(Configuration.GetSection("BotConfiguration"));
+      services.AddTransient<JobFactory>();
 
       services.AddControllers()
         .AddNewtonsoftJson(); 

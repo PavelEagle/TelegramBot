@@ -36,6 +36,7 @@ namespace TelegramBot.TextCommands
         });
 
         _chatSettingsBotData.YouTubeSearchApiEnable = true;
+
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Try to search or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }
@@ -56,6 +57,7 @@ namespace TelegramBot.TextCommands
       }
 
       _chatSettingsBotData.YouTubeSearchApiEnable = false;
+
       for (var i = 0; i < Math.Min(search.Items.Count, 3); i++)
       {
         if (i == Math.Min(search.Items.Count, 3) - 1)

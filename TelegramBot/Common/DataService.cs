@@ -24,7 +24,12 @@ namespace TelegramBot.Common
       ChatSettings.ChatSettingsData = await LoadData<ConcurrentQueue<ChatSettingsBotData>>(BotConstants.Paths.Settings) ?? new ConcurrentQueue<ChatSettingsBotData>();
     }
 
-    public static async Task SaveAppData()
+    public static async Task SaveChatSettings()
+    {
+      await SaveData(ChatSettings.ChatSettingsData, BotConstants.Paths.Settings);
+    }
+
+    public static async Task SaveBotData()
     {
       var difference = CurrentDialogBotData.DialogBotData.QuestionsData.Count - CurrentDialogBotData.DialogBotData.AnswerData.Count;
 
@@ -45,7 +50,6 @@ namespace TelegramBot.Common
       }
 
       await SaveData(CurrentDialogBotData.DialogBotData, BotConstants.Paths.DialogData);
-      await SaveData(ChatSettings.ChatSettingsData, BotConstants.Paths.Settings);
     }
 
     private static async Task SaveData<T>(T data, string filePath)
@@ -62,6 +66,7 @@ namespace TelegramBot.Common
         File.Create(filePath);
         return default;
       }
+
       var answersData = await File.ReadAllBytesAsync(filePath);
       return Deserialize<T>(answersData);
     }

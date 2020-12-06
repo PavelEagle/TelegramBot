@@ -37,6 +37,7 @@ namespace TelegramBot.TextCommands
         });
 
         _chatSettingsBotData.WikiApiEnable = true;
+
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of article or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }

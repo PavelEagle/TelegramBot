@@ -37,6 +37,7 @@ namespace TelegramBot.TextCommands
         });
 
         _chatSettingsBotData.WeatherApiEnable = true;
+
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the city or choose from list: ", replyMarkup: inlineKeyboard);
         return;
       }

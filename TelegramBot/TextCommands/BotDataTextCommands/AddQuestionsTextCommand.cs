@@ -28,6 +28,7 @@ namespace TelegramBot.TextCommands
 
         _chatSettingsBotData.TrainingAction = nameof(TrainingActions.AddQuestion);
         _chatSettingsBotData.LearningState = 1;
+
         return;
       }
 

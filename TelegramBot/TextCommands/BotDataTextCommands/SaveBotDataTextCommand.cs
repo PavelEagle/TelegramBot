@@ -18,7 +18,9 @@ namespace TelegramBot.TextCommands
     {
       try
       {
-        await DataService.SaveAppData();
+        await DataService.SaveBotData();
+        await DataService.SaveChatSettings();
+
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Data has been saved");
       }
       catch(Exception ex)

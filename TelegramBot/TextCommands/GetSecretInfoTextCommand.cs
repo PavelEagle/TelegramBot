@@ -22,7 +22,7 @@ namespace TelegramBot.TextCommands
       var exitKeyboard = KeyboardBuilder.CreateExitButton();
       if (_chatSettingsBotData.AccountName == BotConstants.AccountName.Admin)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "SecretInfo", replyMarkup: exitKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Some Secret Info", replyMarkup: exitKeyboard);
         return;
       }
 
