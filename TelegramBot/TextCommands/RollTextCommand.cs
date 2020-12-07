@@ -7,7 +7,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class RollTextCommand: ITextCommand
+  public sealed class RollTextCommand: ITextCommand
   {
     private readonly IBotService _botService;
     private readonly Random _rnd;

@@ -6,7 +6,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class SaveBotDataTextCommand : ITextCommand
+  public sealed class SaveBotDataTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     public SaveBotDataTextCommand(IBotService botService)

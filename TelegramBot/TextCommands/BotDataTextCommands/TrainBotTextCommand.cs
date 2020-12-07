@@ -6,7 +6,7 @@ using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
-  public class TrainBotTextCommand : ITextCommand
+  public sealed class TrainBotTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     public TrainBotTextCommand(IBotService botService)

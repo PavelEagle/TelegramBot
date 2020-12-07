@@ -11,7 +11,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class CreateQuestionTextCommand : ITextCommand
+  public sealed class CreateQuestionTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

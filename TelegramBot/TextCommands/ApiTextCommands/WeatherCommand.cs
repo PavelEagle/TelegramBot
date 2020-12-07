@@ -11,7 +11,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class WeatherCommand : ITextCommand
+  public sealed class WeatherCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

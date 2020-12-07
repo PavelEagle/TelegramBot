@@ -6,7 +6,7 @@ using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
-  public class ApiTextCommand : ITextCommand
+  public sealed class ApiTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     public ApiTextCommand(IBotService botService)

@@ -10,7 +10,7 @@ using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
-  public class WikiSearchTextCommand : ITextCommand
+  public sealed class WikiSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

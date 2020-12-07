@@ -7,7 +7,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class RemoveQuestionTextCommand : ITextCommand
+  public sealed class RemoveQuestionTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

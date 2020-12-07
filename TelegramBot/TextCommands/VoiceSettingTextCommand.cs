@@ -6,7 +6,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class VoiceSettingTextCommand : ITextCommand
+  public sealed class VoiceSettingTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

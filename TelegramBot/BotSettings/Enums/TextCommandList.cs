@@ -28,14 +28,14 @@ namespace TelegramBot.Enums
         { Weather, "Weather info"},
         { YoutubeSearch, "Youtube search"},
         { Wiki, "Wiki search" },
-        { Roll, "Roll random number"},
+        { Roll, "Roll"},
         { TrainBot, "Train Bot"},
         { CreateNewQuestion, "Add New Question"},
         { RemoveQuestion, "Delete Question"},
         { AddQuestion, "Add Question"},
         { AddAnswer, "Add Answer"},
         { SaveBotData, "Save Data"},
-        { SetVoice, "Voice"},
+        { SetVoice, "Voice setting"},
         { GetSecretInfo, "Get secret info"},
       };
   }

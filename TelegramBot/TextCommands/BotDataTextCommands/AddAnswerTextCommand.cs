@@ -9,7 +9,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class AddAnswerTextCommand : ITextCommand
+  public sealed class AddAnswerTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

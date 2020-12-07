@@ -11,7 +11,7 @@ using TelegramBot.Enums;
 
 namespace TelegramBot.TextCommands
 {
-  public class YoutubeSearchTextCommand : ITextCommand
+  public sealed class YoutubeSearchTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;
@@ -56,19 +56,20 @@ namespace TelegramBot.TextCommands
         return;
       }
 
-      _chatSettingsBotData.YouTubeSearchApiEnable = false;
+      var numberOfVideos = 3;
 
-      for (var i = 0; i < Math.Min(search.Items.Count, 3); i++)
+      for (var i = 0; i < Math.Min(search.Items.Count, numberOfVideos); i++)
       {
-        if (i == Math.Min(search.Items.Count, 3) - 1)
+        if (i == Math.Min(search.Items.Count, numberOfVideos) - 1)
         {
-          var exitKeyboard = KeyboardBuilder.CreateExitButton();
-          await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link, replyMarkup: exitKeyboard);
+          await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link, replyMarkup: keyboard);
           break;
         }
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link);
       }
+
+      _chatSettingsBotData.YouTubeSearchApiEnable = false;
     }
   }
 }

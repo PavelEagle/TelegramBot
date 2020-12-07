@@ -11,7 +11,7 @@ using TelegramBot.Common;
 
 namespace TelegramBot.TextCommands
 {
-  public class DefaultTextCommand : ITextCommand
+  public sealed class DefaultTextCommand : ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;

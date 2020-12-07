@@ -7,7 +7,7 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public class HelpTextCommand: ITextCommand
+  public sealed class HelpTextCommand: ITextCommand
   {
     private readonly IBotService _botService;
     private readonly ChatSettingsBotData _chatSettingsBotData;
@@ -20,8 +20,14 @@ namespace TelegramBot.TextCommands
     public async Task ProcessMessage(Message message)
     {
       var menu = (_chatSettingsBotData.AccountName == BotConstants.AccountName.Admin) ? KeyboardBuilder.CreateAdminHelpMenu(): KeyboardBuilder.CreateHelpMenu();
+      var text = "Make your choice: \n"
+                 + "Api - get info about weather, search articles on Wikipedia.org and search videos on youtube;\n"
+                 + "Roll - random number from 1 to 100;\n"
+                 + "Voice - set voice answer setting;\n"
+                 + "Train Bot - add or remove question or answers;\n"
+                 + "Save data - save dialog bot data and chat settings\n";
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Make your choice: ", replyMarkup: menu);
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: menu);
     }
   }
 }
