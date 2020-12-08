@@ -10,7 +10,7 @@ namespace TelegramBot.Common
     {
       return new InlineKeyboardMarkup(new[]
       { 
-        new[] { InlineKeyboardButton.WithCallbackData("Menu", TextCommandList.Help) }
+        new[] { InlineKeyboardButton.WithCallbackData("Back to menu", TextCommandList.Help) }
       });
     }
 

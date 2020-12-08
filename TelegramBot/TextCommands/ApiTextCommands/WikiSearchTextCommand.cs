@@ -54,17 +54,18 @@ namespace TelegramBot.TextCommands
       var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
-      var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
 
-      if (string.IsNullOrEmpty(result))
+      if (firstParagraph==null)
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found");
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found, try again");
         return;
       }
 
-      _chatSettingsBotData.WikiApiEnable = false; 
-
+      var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
       var exitKeyboard = KeyboardBuilder.CreateExitButton();
+
+      _chatSettingsBotData.WikiApiEnable = false;
+      
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
     }
   }

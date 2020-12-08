@@ -50,7 +50,7 @@ namespace TelegramBot.TextCommands
 
       if (json["cod"].ToString() == "404")
       {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Unknown city");
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Unknown city, try again: ");
         return;
       }
 
@@ -64,7 +64,7 @@ namespace TelegramBot.TextCommands
       var weather = json["weather"][0]["main"];
       var temp = Math.Round((double)json["main"]["temp"] - 273.15, 2);
       var wind = json["wind"]["speed"];
-      var result = $"City: {city},\nWeather: {weather},\nTemperature: {temp} °C,\nWind: {wind} m/s";
+      var result = $"City: {city}, Weather: {weather},\nTemperature: {temp} °C, Wind: {wind} m/s";
 
       _chatSettingsBotData.WeatherApiEnable = false;
 

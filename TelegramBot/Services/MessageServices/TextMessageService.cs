@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.BotData;
@@ -7,7 +9,7 @@ using TelegramBot.TextCommands;
 
 namespace TelegramBot.Services
 {
-  public class TextMessageService: IMessageService
+  public class TextMessageService : IMessageService
   {
     private readonly ITextCommand _command;
     private readonly Message _message;
@@ -20,8 +22,9 @@ namespace TelegramBot.Services
 
     public static TextMessageService Create(IBotService botService, Message message)
     {
-      if (!ChatSettings.ChatSettingsData.Any(x => x.ChatId==message.Chat.Id)) {
-        ChatSettings.ChatSettingsData.Enqueue(new ChatSettingsBotData { ChatId=message.Chat.Id ,AccountName = message.Chat.Username , LearningState = 0, VoiceAnswer = false});
+      if (!ChatSettings.ChatSettingsData.Any(x => x.ChatId == message.Chat.Id))
+      {
+        ChatSettings.ChatSettingsData.Enqueue(new ChatSettingsBotData { ChatId = message.Chat.Id, AccountName = message.Chat.Username, LearningState = 0, VoiceAnswer = false });
       }
 
       var currentSettings = ChatSettings.ChatSettingsData.Single(x => x.ChatId == message.Chat.Id);
@@ -30,41 +33,26 @@ namespace TelegramBot.Services
       if (currentSettings.LearningState != 0)
         return currentSettings.TrainingAction switch
         {
-          nameof(TrainingActions.Create) => new TextMessageService(new CreateQuestionTextCommand(botService, currentSettings), message),
-          nameof(TrainingActions.AddQuestion) => new TextMessageService(new AddQuestionsTextCommand(botService, currentSettings), message),
-          nameof(TrainingActions.AddAnswer) => new TextMessageService(new AddAnswerTextCommand(botService, currentSettings), message),
-          nameof(TrainingActions.Remove) => new TextMessageService(new RemoveQuestionTextCommand(botService, currentSettings), message),
-          _ => new TextMessageService(new DefaultTextCommand(botService, currentSettings), message)
+          nameof(TrainingActions.Create) => textCommandCreationDictionary[TextCommandList.CreateNewQuestion].Invoke(message, botService, currentSettings),
+          nameof(TrainingActions.AddQuestion) => textCommandCreationDictionary[TextCommandList.AddQuestion].Invoke(message, botService, currentSettings),
+          nameof(TrainingActions.AddAnswer) => textCommandCreationDictionary[TextCommandList.AddAnswer].Invoke(message, botService, currentSettings),
+          nameof(TrainingActions.Remove) => textCommandCreationDictionary[TextCommandList.RemoveQuestion].Invoke(message, botService, currentSettings),
+          _ => textCommandCreationDictionary[TextCommandList.Default].Invoke(message, botService, currentSettings)
         };
 
-      if (currentSettings.WikiApiEnable) 
-        return new TextMessageService(new WikiSearchTextCommand(botService, currentSettings), message);
+      if (currentSettings.WikiApiEnable)
+        return textCommandCreationDictionary[TextCommandList.Wiki].Invoke(message, botService, currentSettings);
 
       if (currentSettings.WeatherApiEnable)
-        return new TextMessageService(new WeatherCommand(botService, currentSettings), message);
+        return textCommandCreationDictionary[TextCommandList.Weather].Invoke(message, botService, currentSettings);
 
       if (currentSettings.YouTubeSearchApiEnable)
-        return new TextMessageService(new YoutubeSearchTextCommand(botService, currentSettings), message);
+        return textCommandCreationDictionary[TextCommandList.YoutubeSearch].Invoke(message, botService, currentSettings);
 
-      return message.Text.ToLower() switch
-      {
-        var str when str.StartsWith(TextCommandList.Start) => new TextMessageService(new StartCommand(botService), message),
-        var str when str.StartsWith(TextCommandList.Help) => new TextMessageService(new HelpTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.Roll) => new TextMessageService(new RollTextCommand(botService), message),
-        var str when str.StartsWith(TextCommandList.CreateNewQuestion) => new TextMessageService(new CreateQuestionTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.RemoveQuestion) => new TextMessageService(new RemoveQuestionTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.AddAnswer) => new TextMessageService(new AddAnswerTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.AddQuestion) => new TextMessageService(new AddQuestionsTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.TrainBot) => new TextMessageService(new TrainBotTextCommand(botService), message),
-        var str when str.StartsWith(TextCommandList.SaveBotData) => new TextMessageService(new SaveBotDataTextCommand(botService), message),
-        var str when str.StartsWith(TextCommandList.SetVoice) => new TextMessageService(new VoiceSettingTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.Api) => new TextMessageService(new ApiTextCommand(botService), message),
-        var str when str.StartsWith(TextCommandList.Weather) => new TextMessageService(new WeatherCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.Wiki) => new TextMessageService(new WikiSearchTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.YoutubeSearch) => new TextMessageService(new YoutubeSearchTextCommand(botService, currentSettings), message),
-        var str when str.StartsWith(TextCommandList.GetSecretInfo) => new TextMessageService(new GetSecretInfoTextCommand(botService, currentSettings), message),
-        _ => new TextMessageService(new DefaultTextCommand(botService, currentSettings), message)
-      };
+      var textCommand = textCommandCreationDictionary.FirstOrDefault(x => message.Text.ToLower().StartsWith(x.Key)).Value;
+
+      return textCommand != null ? textCommand.Invoke(message, botService, currentSettings)
+                                 : textCommandCreationDictionary[TextCommandList.Default].Invoke(message, botService, currentSettings);
     }
 
     public static TextMessageService Create(IBotService botService, CallbackQuery callbackQuery)
@@ -79,5 +67,27 @@ namespace TelegramBot.Services
     {
       await _command.ProcessMessage(_message);
     }
+
+    // dictionary with delegates 
+    private static readonly Dictionary<string, Func<Message, IBotService, ChatSettingsBotData, TextMessageService>> textCommandCreationDictionary = 
+      new Dictionary<string, Func<Message, IBotService, ChatSettingsBotData, TextMessageService>>
+      {
+        { TextCommandList.Start, (message, botService, settings) => new TextMessageService(new StartCommand(botService), message) },
+        { TextCommandList.Help, (message, botService, settings) => new TextMessageService(new HelpTextCommand(botService, settings), message) },
+        { TextCommandList.Roll, (message, botService, settings) => new TextMessageService(new RollTextCommand(botService), message) },
+        { TextCommandList.CreateNewQuestion, (message, botService, settings) => new TextMessageService(new CreateQuestionTextCommand(botService, settings), message) },
+        { TextCommandList.RemoveQuestion, (message, botService, settings) => new TextMessageService(new RemoveQuestionTextCommand(botService, settings), message) },
+        { TextCommandList.AddAnswer, (message, botService, settings) => new TextMessageService(new AddAnswerTextCommand(botService, settings), message) },
+        { TextCommandList.AddQuestion, (message, botService, settings) => new TextMessageService(new AddQuestionsTextCommand(botService, settings), message) },
+        { TextCommandList.TrainBot, (message, botService, settings) => new TextMessageService(new TrainBotTextCommand(botService), message) },
+        { TextCommandList.SaveBotData, (message, botService, settings) => new TextMessageService(new SaveBotDataTextCommand(botService), message) },
+        { TextCommandList.SetVoice, (message, botService, settings) => new TextMessageService(new VoiceSettingTextCommand(botService, settings), message) },
+        { TextCommandList.Api, (message, botService, settings) => new TextMessageService(new ApiTextCommand(botService), message) },
+        { TextCommandList.Weather, (message, botService, settings) => new TextMessageService(new WeatherCommand(botService, settings), message) },
+        { TextCommandList.Wiki, (message, botService, settings) => new TextMessageService(new WikiSearchTextCommand(botService, settings), message) },
+        { TextCommandList.YoutubeSearch, (message, botService, settings) => new TextMessageService(new YoutubeSearchTextCommand(botService, settings), message) },
+        { TextCommandList.GetSecretInfo, (message, botService, settings) => new TextMessageService(new GetSecretInfoTextCommand(botService, settings), message) },
+        { TextCommandList.Default, (message, botService, settings) => new TextMessageService(new DefaultTextCommand(botService, settings), message) },
+      };
   }
 }

@@ -5,6 +5,7 @@ namespace TelegramBot.Enums
   public static class TextCommandList
   {  
     public const string Start = "/start";
+    public const string Default = "/default";
     public const string Api = "/api";
     public const string Weather = "/weather";
     public const string Wiki = "/wiki";
@@ -30,7 +31,7 @@ namespace TelegramBot.Enums
         { Wiki, "Wiki search" },
         { Roll, "Roll"},
         { TrainBot, "Train Bot"},
-        { CreateNewQuestion, "Add New Question"},
+        { CreateNewQuestion, "Create New Question"},
         { RemoveQuestion, "Delete Question"},
         { AddQuestion, "Add Question"},
         { AddAnswer, "Add Answer"},

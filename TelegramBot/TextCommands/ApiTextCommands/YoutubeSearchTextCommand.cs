@@ -30,14 +30,14 @@ namespace TelegramBot.TextCommands
           new[] 
           {
             InlineKeyboardButton.WithCallbackData("Dancing!", "Dancing"),
-            InlineKeyboardButton.WithCallbackData("Cats", "Cats"),
-            InlineKeyboardButton.WithCallbackData("Space", "Space")
+            InlineKeyboardButton.WithCallbackData("Cats in space", "Cats in space"),
+            InlineKeyboardButton.WithCallbackData("Tame Impala", "Tame Impala")
           }
         });
 
         _chatSettingsBotData.YouTubeSearchApiEnable = true;
 
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Try to search or choose from list: ", replyMarkup: inlineKeyboard);
+        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Choose from list ot try to search something funny: ", replyMarkup: inlineKeyboard);
         return;
       }
 

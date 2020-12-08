@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.BotData;
 using TelegramBot.Common;
@@ -20,14 +21,15 @@ namespace TelegramBot.TextCommands
     public async Task ProcessMessage(Message message)
     {
       var menu = (_chatSettingsBotData.AccountName == BotConstants.AccountName.Admin) ? KeyboardBuilder.CreateAdminHelpMenu(): KeyboardBuilder.CreateHelpMenu();
-      var text = "Make your choice: \n"
-                 + "Api - get info about weather, search articles on Wikipedia.org and search videos on youtube;\n"
-                 + "Roll - random number from 1 to 100;\n"
-                 + "Voice - set voice answer setting;\n"
-                 + "Train Bot - add or remove question or answers;\n"
-                 + "Save data - save dialog bot data and chat settings\n";
+      var text = new StringBuilder("Make your choice: \n");
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, text, replyMarkup: menu);
+      text.Append("Api - get info about weather, search articles on Wikipedia.org and search videos on youtube;\n");
+      text.Append("Roll - random number from 1 to 100;\n");
+      text.Append("Voice - set voice answer setting;\n");
+      text.Append("Train Bot - add or remove question or answers;\n");
+      text.Append("Save data - save dialog bot data and chat settings\n");
+
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, text.ToString(), replyMarkup: menu);
     }
   }
 }

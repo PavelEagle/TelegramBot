@@ -22,12 +22,12 @@ namespace TelegramBot.TextCommands
       {
         new[]
         {
-          InlineKeyboardButton.WithCallbackData("Try again!", TextCommandList.Roll),
-          InlineKeyboardButton.WithCallbackData("Back", TextCommandList.Help),
+          InlineKeyboardButton.WithCallbackData("Test your luck again!", TextCommandList.Roll),
+          InlineKeyboardButton.WithCallbackData("Back to menu", TextCommandList.Help)
         }
       });
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, _rnd.Next(1,101).ToString(), replyMarkup: keyboard);
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Result: {_rnd.Next(1, 101)}", replyMarkup: keyboard);
     }
   }
 }

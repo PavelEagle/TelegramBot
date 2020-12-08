@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.Services;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -30,8 +31,8 @@ namespace TelegramBot.TextCommands
           InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.AddAnswer], TextCommandList.AddAnswer)
         }
       });
-
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Choose train options:", replyMarkup: inlineKeyboard);
+      
+      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Choose train options: ", replyMarkup: inlineKeyboard);
     }
   }
 }
