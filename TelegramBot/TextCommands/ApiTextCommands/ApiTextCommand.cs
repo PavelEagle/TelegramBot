@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
-using TelegramBot.Services;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
+using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.ApiTextCommands
 {
   public sealed class ApiTextCommand : ITextCommand
   {

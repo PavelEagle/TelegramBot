@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotData;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Common;
-using TelegramBot.Enums;
 using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.BotDataTextCommands
 {
   public sealed class AddQuestionsTextCommand : ITextCommand
   {
@@ -26,7 +26,8 @@ namespace TelegramBot.TextCommands
       {
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the question: ");
 
-        _chatSettingsBotData.TrainingAction = nameof(TrainingActions.AddQuestion);
+        _chatSettingsBotData.TrainingAction = TrainingActions.AddQuestion;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.Training;
         _chatSettingsBotData.LearningState = 1;
 
         return;
@@ -50,7 +51,8 @@ namespace TelegramBot.TextCommands
 
       if (message.Text == TextCommandList.Exit)
       {
-        _chatSettingsBotData.TrainingAction = nameof(TrainingActions.NoTrain);
+        _chatSettingsBotData.TrainingAction = TrainingActions.NoTrain; 
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
         _chatSettingsBotData.LearningState = 0;
 
         var exitKeyboard = KeyboardBuilder.CreateExitButton();

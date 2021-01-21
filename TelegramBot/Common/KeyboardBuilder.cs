@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
 
 namespace TelegramBot.Common
 {

@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.BotData;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.BotDataTextCommands
 {
   public sealed class RemoveQuestionTextCommand : ITextCommand
   {
@@ -28,7 +28,8 @@ namespace TelegramBot.TextCommands
 
       if (message.Text == TextCommandList.RemoveQuestion)
       {
-        _chatSettingsBotData.TrainingAction = nameof(TrainingActions.Remove);
+        _chatSettingsBotData.TrainingAction = TrainingActions.Remove;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.Training;
         _chatSettingsBotData.LearningState = 1;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the question: ");
@@ -46,7 +47,8 @@ namespace TelegramBot.TextCommands
 
         CurrentDialogBotData.DialogBotData.QuestionsData.TryRemove(questionId, out var deletedQuestion);
 
-        _chatSettingsBotData.TrainingAction = nameof(TrainingActions.NoTrain);
+        _chatSettingsBotData.TrainingAction = TrainingActions.NoTrain;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
         _chatSettingsBotData.LearningState = 0;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Question \"{deletedQuestion.FirstOrDefault()}\" was deleted" );

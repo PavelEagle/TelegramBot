@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.BotData;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.TextCommands;
+using TelegramBot.TextCommands.ApiTextCommands;
+using TelegramBot.TextCommands.BotDataTextCommands;
 
-namespace TelegramBot.Services
+namespace TelegramBot.Services.MessageServices
 {
   public class TextMessageService : IMessageService
   {
@@ -22,7 +24,7 @@ namespace TelegramBot.Services
 
     public static TextMessageService Create(IBotService botService, Message message)
     {
-      if (!ChatSettings.ChatSettingsData.Any(x => x.ChatId == message.Chat.Id))
+      if (ChatSettings.ChatSettingsData.FirstOrDefault(x => x.ChatId == message.Chat.Id) == null)
       {
         ChatSettings.ChatSettingsData.Enqueue(new ChatSettingsBotData { ChatId = message.Chat.Id, AccountName = message.Chat.Username, LearningState = 0, VoiceAnswer = false });
       }
@@ -30,23 +32,23 @@ namespace TelegramBot.Services
       var currentSettings = ChatSettings.ChatSettingsData.Single(x => x.ChatId == message.Chat.Id);
 
       // bot training
-      if (currentSettings.LearningState != 0)
+      if (currentSettings.ActiveCommand == ActiveCommand.Training)
         return currentSettings.TrainingAction switch
         {
-          nameof(TrainingActions.Create) => textCommandCreationDictionary[TextCommandList.CreateNewQuestion].Invoke(message, botService, currentSettings),
-          nameof(TrainingActions.AddQuestion) => textCommandCreationDictionary[TextCommandList.AddQuestion].Invoke(message, botService, currentSettings),
-          nameof(TrainingActions.AddAnswer) => textCommandCreationDictionary[TextCommandList.AddAnswer].Invoke(message, botService, currentSettings),
-          nameof(TrainingActions.Remove) => textCommandCreationDictionary[TextCommandList.RemoveQuestion].Invoke(message, botService, currentSettings),
+          TrainingActions.Create => textCommandCreationDictionary[TextCommandList.CreateNewQuestion].Invoke(message, botService, currentSettings),
+          TrainingActions.AddQuestion => textCommandCreationDictionary[TextCommandList.AddQuestion].Invoke(message, botService, currentSettings),
+          TrainingActions.AddAnswer => textCommandCreationDictionary[TextCommandList.AddAnswer].Invoke(message, botService, currentSettings),
+          TrainingActions.Remove => textCommandCreationDictionary[TextCommandList.RemoveQuestion].Invoke(message, botService, currentSettings),
           _ => textCommandCreationDictionary[TextCommandList.Default].Invoke(message, botService, currentSettings)
         };
 
-      if (currentSettings.WikiApiEnable)
+      if (currentSettings.ActiveCommand == ActiveCommand.WikiApi)
         return textCommandCreationDictionary[TextCommandList.Wiki].Invoke(message, botService, currentSettings);
 
-      if (currentSettings.WeatherApiEnable)
+      if (currentSettings.ActiveCommand == ActiveCommand.WeatherApi)
         return textCommandCreationDictionary[TextCommandList.Weather].Invoke(message, botService, currentSettings);
 
-      if (currentSettings.YouTubeSearchApiEnable)
+      if (currentSettings.ActiveCommand == ActiveCommand.YouTubeSearch)
         return textCommandCreationDictionary[TextCommandList.YoutubeSearch].Invoke(message, botService, currentSettings);
 
       var textCommand = textCommandCreationDictionary.FirstOrDefault(x => message.Text.ToLower().StartsWith(x.Key)).Value;
@@ -69,7 +71,7 @@ namespace TelegramBot.Services
     }
 
     // dictionary with delegates 
-    private static readonly Dictionary<string, Func<Message, IBotService, ChatSettingsBotData, TextMessageService>> textCommandCreationDictionary = 
+    private static readonly Dictionary<string, Func<Message, IBotService, ChatSettingsBotData, TextMessageService>> textCommandCreationDictionary =
       new Dictionary<string, Func<Message, IBotService, ChatSettingsBotData, TextMessageService>>
       {
         { TextCommandList.Start, (message, botService, settings) => new TextMessageService(new StartCommand(botService), message) },

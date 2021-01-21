@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using RestSharp;
-using ApiConfiguration = TelegramBot.Enums.BotConstants.TextToSpeech; 
+using ApiConfiguration = TelegramBot.BotSettings.Enums.BotConstants.TextToSpeech; 
 
 namespace TelegramBot.Common
 {

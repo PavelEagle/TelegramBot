@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,7 +18,7 @@ namespace TelegramBot.Common
         if (html.InnerHtml.Length > 100)
         {
           result.Append(RemoveUnwantedTagsFromInnerText(html.InnerHtml));
-          result.Append("\n");
+          result.Append(Environment.NewLine);
         }
       }
 

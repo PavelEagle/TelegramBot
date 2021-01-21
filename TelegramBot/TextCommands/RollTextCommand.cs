@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands

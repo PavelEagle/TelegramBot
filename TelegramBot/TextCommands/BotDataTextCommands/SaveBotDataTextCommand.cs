@@ -4,7 +4,7 @@ using Telegram.Bot.Types;
 using TelegramBot.Common;
 using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.BotDataTextCommands
 {
   public sealed class SaveBotDataTextCommand : ITextCommand
   {

@@ -1,4 +1,5 @@
 ﻿using ProtoBuf;
+using TelegramBot.BotSettings.Enums;
 
 namespace TelegramBot.BotData
 {
@@ -12,10 +13,8 @@ namespace TelegramBot.BotData
     [ProtoMember(3)]
     public bool VoiceAnswer { get; set; }  //voice answer setting
     public int LearningState { get; set; } // 0 - no train, 1 and 2 - train action
-    public string TrainingAction { get; set; }  //train actions in enum TrainingActions.cs
+    public ActiveCommand ActiveCommand { get; set; } // 0 - no train, 1 and 2 - train action
+    public TrainingActions TrainingAction { get; set; }  //train actions in enum TrainingActions.cs
     public long CurrentQuestionId { get; set; } // question Id in bot train mode
-    public bool WeatherApiEnable { get; set; }
-    public bool WikiApiEnable { get; set; }
-    public bool YouTubeSearchApiEnable { get; set; }
   }
 }

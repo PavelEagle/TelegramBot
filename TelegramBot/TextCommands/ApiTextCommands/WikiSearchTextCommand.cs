@@ -2,13 +2,13 @@
 using AngleSharp;
 using AngleSharp.Html.Parser;
 using Telegram.Bot.Types;
-using TelegramBot.Services;
-using TelegramBot.Common;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotData;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
+using TelegramBot.Common;
+using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.ApiTextCommands
 {
   public sealed class WikiSearchTextCommand : ITextCommand
   {
@@ -24,11 +24,11 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      if (!_chatSettingsBotData.WikiApiEnable)
+      if (_chatSettingsBotData.ActiveCommand != ActiveCommand.WikiApi)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] 
+          new[]
           {
             InlineKeyboardButton.WithCallbackData("Travel", "Travel"),
             InlineKeyboardButton.WithCallbackData("Singing", "Singing"),
@@ -36,7 +36,7 @@ namespace TelegramBot.TextCommands
           }
         });
 
-        _chatSettingsBotData.WikiApiEnable = true;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.WikiApi;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of article or choose from list: ", replyMarkup: inlineKeyboard);
         return;
@@ -55,7 +55,7 @@ namespace TelegramBot.TextCommands
 
       var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
 
-      if (firstParagraph==null)
+      if (firstParagraph == null)
       {
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found, try again");
         return;
@@ -64,8 +64,8 @@ namespace TelegramBot.TextCommands
       var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
       var exitKeyboard = KeyboardBuilder.CreateExitButton();
 
-      _chatSettingsBotData.WikiApiEnable = false;
-      
+      _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
+
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
     }
   }

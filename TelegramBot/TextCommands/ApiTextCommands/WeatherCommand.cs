@@ -5,11 +5,11 @@ using RestSharp;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotData;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Common;
-using TelegramBot.Enums;
 using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.ApiTextCommands
 {
   public sealed class WeatherCommand : ITextCommand
   {
@@ -24,7 +24,7 @@ namespace TelegramBot.TextCommands
 
     public async Task ProcessMessage(Message message)
     {
-      if (!_chatSettingsBotData.WeatherApiEnable)
+      if (_chatSettingsBotData.ActiveCommand != ActiveCommand.WeatherApi)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
@@ -36,7 +36,7 @@ namespace TelegramBot.TextCommands
             }
         });
 
-        _chatSettingsBotData.WeatherApiEnable = true;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.WeatherApi;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter the city or choose from list: ", replyMarkup: inlineKeyboard);
         return;
@@ -64,9 +64,9 @@ namespace TelegramBot.TextCommands
       var weather = json["weather"][0]["main"];
       var temp = Math.Round((double)json["main"]["temp"] - 273.15, 2);
       var wind = json["wind"]["speed"];
-      var result = $"City: {city}, Weather: {weather},\nTemperature: {temp} °C, Wind: {wind} m/s";
+      var result = $"City: {city}, Weather: {weather},{Environment.NewLine}Temperature: {temp} °C, Wind: {wind} m/s";
 
-      _chatSettingsBotData.WeatherApiEnable = false;
+      _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
 
       var exitKeyboard = KeyboardBuilder.CreateExitButton();
       await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);

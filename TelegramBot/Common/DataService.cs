@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using TelegramBot.BotData;
-using TelegramBot.Enums;
+using TelegramBot.BotSettings.Enums;
 
 namespace TelegramBot.Common
 {

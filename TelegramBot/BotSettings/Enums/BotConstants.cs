@@ -1,4 +1,4 @@
-﻿namespace TelegramBot.Enums
+﻿namespace TelegramBot.BotSettings.Enums
 {
   public static class BotConstants
   {

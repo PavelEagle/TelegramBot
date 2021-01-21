@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Telegram.Bot.Types;
-using TelegramBot.Services;
 using Google.Apis.Customsearch.v1;
 using Google.Apis.Services;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TelegramBot.BotData;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Common;
-using TelegramBot.Enums;
+using TelegramBot.Services;
 
-namespace TelegramBot.TextCommands
+namespace TelegramBot.TextCommands.ApiTextCommands
 {
   public sealed class YoutubeSearchTextCommand : ITextCommand
   {
@@ -23,11 +23,11 @@ namespace TelegramBot.TextCommands
     }
     public async Task ProcessMessage(Message message)
     {
-      if (!_chatSettingsBotData.YouTubeSearchApiEnable)
+      if (_chatSettingsBotData.ActiveCommand != ActiveCommand.YouTubeSearch)
       {
         var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-          new[] 
+          new[]
           {
             InlineKeyboardButton.WithCallbackData("Dancing!", "Dancing"),
             InlineKeyboardButton.WithCallbackData("Cats in space", "Cats in space"),
@@ -35,13 +35,13 @@ namespace TelegramBot.TextCommands
           }
         });
 
-        _chatSettingsBotData.YouTubeSearchApiEnable = true;
+        _chatSettingsBotData.ActiveCommand = ActiveCommand.YouTubeSearch;
 
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Choose from list ot try to search something funny: ", replyMarkup: inlineKeyboard);
         return;
       }
 
-      var svc = new CustomsearchService(new BaseClientService.Initializer {ApiKey = BotConstants.YouTubeSearch.ApiKey});
+      var svc = new CustomsearchService(new BaseClientService.Initializer { ApiKey = BotConstants.YouTubeSearch.ApiKey });
       var listRequest = svc.Cse.List();
       listRequest.Q = message.Text;
 
@@ -69,7 +69,7 @@ namespace TelegramBot.TextCommands
         await _botService.Client.SendTextMessageAsync(message.Chat.Id, search.Items[i].Link);
       }
 
-      _chatSettingsBotData.YouTubeSearchApiEnable = false;
+      _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
     }
   }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TelegramBot.Enums
+namespace TelegramBot.BotSettings.Enums
 {
   public static class TextCommandList
   {  

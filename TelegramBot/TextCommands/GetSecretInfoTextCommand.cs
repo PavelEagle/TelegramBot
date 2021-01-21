@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using TelegramBot.BotData;
+using TelegramBot.BotSettings.Enums;
 using TelegramBot.Common;
-using TelegramBot.Enums;
 using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
