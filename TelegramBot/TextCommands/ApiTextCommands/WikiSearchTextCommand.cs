@@ -10,63 +10,65 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands.ApiTextCommands
 {
-  public sealed class WikiSearchTextCommand : ITextCommand
-  {
-    private readonly IBotService _botService;
-    private readonly ChatSettingsBotData _chatSettingsBotData;
-    private readonly HtmlParser _htmlParser;
-    public WikiSearchTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
+    public sealed class WikiSearchTextCommand : ITextCommand
     {
-      _botService = botService;
-      _chatSettingsBotData = chatSettingsBotData;
-      _htmlParser = new HtmlParser();
-    }
+        private readonly IBotService _botService;
+        private readonly ChatSettingsBotData _chatSettingsBotData;
+        private readonly HtmlParser _htmlParser;
 
-    public async Task ProcessMessage(Message message)
-    {
-      if (_chatSettingsBotData.ActiveCommand != ActiveCommand.WikiApi)
-      {
-        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        public WikiSearchTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
         {
-          new[]
-          {
-            InlineKeyboardButton.WithCallbackData("Travel", "Travel"),
-            InlineKeyboardButton.WithCallbackData("Singing", "Singing"),
-            InlineKeyboardButton.WithCallbackData("Eagle", "Eagle")
-          }
-        });
+            _botService = botService;
+            _chatSettingsBotData = chatSettingsBotData;
+            _htmlParser = new HtmlParser();
+        }
 
-        _chatSettingsBotData.ActiveCommand = ActiveCommand.WikiApi;
+        public async Task ProcessMessage(Message message)
+        {
+            if (_chatSettingsBotData.ActiveCommand != ActiveCommand.WikiApi)
+            {
+                var inlineKeyboard = new InlineKeyboardMarkup(new[]
+                {
+                    new[]
+                    {
+                        InlineKeyboardButton.WithCallbackData("Travel", "Travel"),
+                        InlineKeyboardButton.WithCallbackData("Singing", "Singing"),
+                        InlineKeyboardButton.WithCallbackData("Eagle", "Eagle")
+                    }
+                });
 
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Enter name of article or choose from list: ", replyMarkup: inlineKeyboard);
-        return;
-      }
+                _chatSettingsBotData.ActiveCommand = ActiveCommand.WikiApi;
 
-      var config = Configuration.Default.WithDefaultLoader().WithCss();
-      var context = BrowsingContext.New(config);
-      if (string.IsNullOrEmpty(message.Text))
-      {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Invalid request");
-        return;
-      }
+                await _botService.Client.SendTextMessageAsync(message.Chat.Id,
+                    "Enter name of article or choose from list: ", replyMarkup: inlineKeyboard);
+                return;
+            }
 
-      var source = await context.OpenAsync(BotConstants.Wiki.Url + message.Text);
-      var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
+            var config = Configuration.Default.WithDefaultLoader().WithCss();
+            var context = BrowsingContext.New(config);
+            if (string.IsNullOrEmpty(message.Text))
+            {
+                await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Invalid request");
+                return;
+            }
 
-      var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
+            var source = await context.OpenAsync(BotConstants.Wiki.Url + message.Text);
+            var document = _htmlParser.ParseDocument(source.Body.InnerHtml);
 
-      if (firstParagraph == null)
-      {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found, try again");
-        return;
-      }
+            var firstParagraph = document.GetElementById("mf-section-0")?.GetElementsByTagName("p");
 
-      var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
-      var exitKeyboard = KeyboardBuilder.CreateExitButton();
+            if (firstParagraph == null)
+            {
+                await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Not found, try again");
+                return;
+            }
 
-      _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
+            var result = HtmlParserHelper.RemoveUnwantedTagsFromHtmlCollection(firstParagraph);
+            var exitKeyboard = KeyboardBuilder.CreateExitButton();
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
+            _chatSettingsBotData.ActiveCommand = ActiveCommand.Default;
+
+            await _botService.Client.SendTextMessageAsync(message.Chat.Id, result, replyMarkup: exitKeyboard);
+        }
     }
-  }
 }

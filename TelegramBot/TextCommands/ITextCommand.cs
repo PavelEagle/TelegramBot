@@ -3,8 +3,8 @@ using Telegram.Bot.Types;
 
 namespace TelegramBot.TextCommands
 {
-  public interface ITextCommand
-  {
-    Task ProcessMessage(Message message);
-  }
+    public interface ITextCommand
+    {
+        Task ProcessMessage(Message message);
+    }
 }

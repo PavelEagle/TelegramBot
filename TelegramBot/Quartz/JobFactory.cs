@@ -5,23 +5,23 @@ using Quartz.Spi;
 
 namespace TelegramBot.Quartz
 {
-  public class JobFactory: IJobFactory
-  {
-    private readonly IServiceScopeFactory _provider;
-
-    public JobFactory(IServiceScopeFactory provider)
+    public class JobFactory : IJobFactory
     {
-      _provider = provider;
-    }
+        private readonly IServiceScopeFactory _provider;
 
-    public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
-    {
-      return new JobWrapper(_provider, bundle.JobDetail.JobType);
-    }
+        public JobFactory(IServiceScopeFactory provider)
+        {
+            _provider = provider;
+        }
 
-    public void ReturnJob(IJob job)
-    {
-      (job as IDisposable)?.Dispose();
+        public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
+        {
+            return new JobWrapper(_provider, bundle.JobDetail.JobType);
+        }
+
+        public void ReturnJob(IJob job)
+        {
+            (job as IDisposable)?.Dispose();
+        }
     }
-  }
 }

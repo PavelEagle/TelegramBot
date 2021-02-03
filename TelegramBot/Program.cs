@@ -7,25 +7,25 @@ using TelegramBot.Quartz;
 
 namespace TelegramBot
 {
-  public class Program
-  {
-    public static async Task Main(string[] args)
+    public class Program
     {
-      await DataService.LoadAppData();
+        public static async Task Main(string[] args)
+        {
+            await DataService.LoadAppData();
 
-      var host = CreateHostBuilder(args).Build();
+            var host = CreateHostBuilder(args).Build();
 
-      using (var scope = host.Services.CreateScope())
-      {
-        var serviceProvider = scope.ServiceProvider;
-        SaveScheduler.Start(serviceProvider);
-      }
+            using (var scope = host.Services.CreateScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
+                SaveScheduler.Start(serviceProvider);
+            }
 
-      host.Run();
+            await host.RunAsync();
+        }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
-
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-      Host.CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
-  }
 }

@@ -6,22 +6,25 @@ using TelegramBot.BotSettings.Enums;
 
 namespace TelegramBot.TextCommands
 {
-  public sealed class StartCommand: ITextCommand
-  {
-    private readonly IBotService _botService;
-    public StartCommand(IBotService botService)
+    public sealed class StartCommand : ITextCommand
     {
-      _botService = botService;
-    }
+        private readonly IBotService _botService;
 
-    public async Task ProcessMessage(Message message)
-    {
-      var inlineKeyboard = new InlineKeyboardMarkup(new[]
-       {
-        new[] {InlineKeyboardButton.WithCallbackData("Help!", TextCommandList.Help) }
-      });
+        public StartCommand(IBotService botService)
+        {
+            _botService = botService;
+        }
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Welcome, {message.From.Username}! This is bot, bla-bla-bla. Click help to show more info", replyMarkup: inlineKeyboard);
+        public async Task ProcessMessage(Message message)
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+            {
+                new[] {InlineKeyboardButton.WithCallbackData("Help!", TextCommandList.Help)}
+            });
+
+            await _botService.Client.SendTextMessageAsync(message.Chat.Id,
+                $"Welcome, {message.From.Username}! This is bot, bla-bla-bla. Click help to show more info",
+                replyMarkup: inlineKeyboard);
+        }
     }
-  }
 }

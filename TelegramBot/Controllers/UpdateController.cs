@@ -5,22 +5,22 @@ using TelegramBot.Services;
 
 namespace TelegramBot.Controllers
 {
-  [Route("api/[controller]")]
-  [ApiController]
-  public class UpdateController : ControllerBase
-  {
-    private readonly IUpdateService _updateService;
-
-    public UpdateController(IUpdateService updateService)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UpdateController : ControllerBase
     {
-      _updateService = updateService;
-    }
+        private readonly IUpdateService _updateService;
 
-    [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Update update)
-    {
-      await _updateService.EchoAsync(update);
-      return Ok();
+        public UpdateController(IUpdateService updateService)
+        {
+            _updateService = updateService;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] Update update)
+        {
+            await _updateService.EchoAsync(update);
+            return Ok();
+        }
     }
-  }
 }

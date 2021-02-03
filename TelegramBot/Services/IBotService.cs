@@ -2,8 +2,8 @@
 
 namespace TelegramBot.Services
 {
-  public interface IBotService
-  {
-    TelegramBotClient Client { get; }
-  }
+    public interface IBotService
+    {
+        TelegramBotClient Client { get; }
+    }
 }

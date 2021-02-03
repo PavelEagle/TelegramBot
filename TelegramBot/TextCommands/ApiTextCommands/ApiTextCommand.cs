@@ -6,27 +6,31 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands.ApiTextCommands
 {
-  public sealed class ApiTextCommand : ITextCommand
-  {
-    private readonly IBotService _botService;
-    public ApiTextCommand(IBotService botService)
+    public sealed class ApiTextCommand : ITextCommand
     {
-      _botService = botService;
-    }
+        private readonly IBotService _botService;
 
-    public async Task ProcessMessage(Message message)
-    {
-      var inlineKeyboard = new InlineKeyboardMarkup(new[]
-      {
-        new[]
+        public ApiTextCommand(IBotService botService)
         {
-          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Weather], TextCommandList.Weather),
-          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.YoutubeSearch], TextCommandList.YoutubeSearch),
-          InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Wiki], TextCommandList.Wiki),
+            _botService = botService;
         }
-      });
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Choose Api:", replyMarkup: inlineKeyboard);
+        public async Task ProcessMessage(Message message)
+        {
+            var inlineKeyboard = new InlineKeyboardMarkup(new[]
+            {
+                new[]
+                {
+                    InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Weather],
+                        TextCommandList.Weather),
+                    InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.YoutubeSearch],
+                        TextCommandList.YoutubeSearch),
+                    InlineKeyboardButton.WithCallbackData(TextCommandList.HelpCommands[TextCommandList.Wiki],
+                        TextCommandList.Wiki),
+                }
+            });
+
+            await _botService.Client.SendTextMessageAsync(message.Chat.Id, $"Choose Api:", replyMarkup: inlineKeyboard);
+        }
     }
-  }
 }

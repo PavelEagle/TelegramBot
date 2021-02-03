@@ -2,8 +2,8 @@
 
 namespace TelegramBot.BotData
 {
-  public static class ChatSettings
-  {
-    public static ConcurrentQueue<ChatSettingsBotData> ChatSettingsData { get; set; }
-  }
+    public static class ChatSettings
+    {
+        public static ConcurrentQueue<ChatSettingsBotData> ChatSettingsData { get; set; }
+    }
 }

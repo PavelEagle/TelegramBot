@@ -5,25 +5,25 @@ using Quartz;
 
 namespace TelegramBot.Quartz
 {
-  public class JobWrapper: IJob, IDisposable
-  {
-    private readonly IServiceScope _serviceScope;
-    private readonly IJob _job;
-
-    public JobWrapper(IServiceScopeFactory serviceScopeFactory, Type jobType)
+    public class JobWrapper : IJob, IDisposable
     {
-      _serviceScope = serviceScopeFactory.CreateScope();
-      _job = ActivatorUtilities.CreateInstance(_serviceScope.ServiceProvider, jobType) as IJob;
-    }
+        private readonly IServiceScope _serviceScope;
+        private readonly IJob _job;
 
-    public Task Execute(IJobExecutionContext context)
-    {
-      return _job.Execute(context);
-    }
+        public JobWrapper(IServiceScopeFactory serviceScopeFactory, Type jobType)
+        {
+            _serviceScope = serviceScopeFactory.CreateScope();
+            _job = ActivatorUtilities.CreateInstance(_serviceScope.ServiceProvider, jobType) as IJob;
+        }
 
-    public void Dispose()
-    {
-      _serviceScope.Dispose();
+        public Task Execute(IJobExecutionContext context)
+        {
+            return _job.Execute(context);
+        }
+
+        public void Dispose()
+        {
+            _serviceScope.Dispose();
+        }
     }
-  }
 }

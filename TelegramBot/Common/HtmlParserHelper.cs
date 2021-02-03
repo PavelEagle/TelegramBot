@@ -8,60 +8,61 @@ using HtmlAgilityPack;
 
 namespace TelegramBot.Common
 {
-  public static class HtmlParserHelper
-  {
-    public static string RemoveUnwantedTagsFromHtmlCollection(IHtmlCollection<IElement> htmlCollection)
+    public static class HtmlParserHelper
     {
-      var result = new StringBuilder();
-      foreach (var html in htmlCollection)
-      {
-        if (html.InnerHtml.Length > 100)
+        public static string RemoveUnwantedTagsFromHtmlCollection(IHtmlCollection<IElement> htmlCollection)
         {
-          result.Append(RemoveUnwantedTagsFromInnerText(html.InnerHtml));
-          result.Append(Environment.NewLine);
-        }
-      }
-
-      return RemoveClosingBrackets(result.ToString());
-    }
-
-    private static string RemoveUnwantedTagsFromInnerText(string data)
-    {
-      if (string.IsNullOrEmpty(data)) return string.Empty;
-
-      var document = new HtmlDocument();
-      document.LoadHtml(data);
-
-      var acceptableTags = new[] {"strong", "em", "u"}; // tags that will not be removed
-
-      var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
-      while (nodes.Count > 0)
-      {
-        var node = nodes.Dequeue();
-        var parentNode = node.ParentNode;
-
-        if (!acceptableTags.Contains(node.Name) && node.Name != "#text")
-        {
-          var childNodes = node.SelectNodes("./*|./text()");
-
-          if (childNodes != null)
-          {
-            foreach (var child in childNodes)
+            var result = new StringBuilder();
+            foreach (var html in htmlCollection)
             {
-              nodes.Enqueue(child);
-              parentNode.InsertBefore(child, node);
+                if (html.InnerHtml.Length > 100)
+                {
+                    result.Append(RemoveUnwantedTagsFromInnerText(html.InnerHtml));
+                    result.Append(Environment.NewLine);
+                }
             }
-          }
-          parentNode.RemoveChild(node);
+
+            return RemoveClosingBrackets(result.ToString());
         }
-      }
 
-      return document.DocumentNode.InnerHtml;
-    }
+        private static string RemoveUnwantedTagsFromInnerText(string data)
+        {
+            if (string.IsNullOrEmpty(data)) return string.Empty;
 
-    private static string RemoveClosingBrackets(string str)
-    {
-      return Regex.Replace(str, @"[\[\d-\]]", string.Empty);
+            var document = new HtmlDocument();
+            document.LoadHtml(data);
+
+            var acceptableTags = new[] {"strong", "em", "u"}; // tags that will not be removed
+
+            var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
+            while (nodes.Count > 0)
+            {
+                var node = nodes.Dequeue();
+                var parentNode = node.ParentNode;
+
+                if (!acceptableTags.Contains(node.Name) && node.Name != "#text")
+                {
+                    var childNodes = node.SelectNodes("./*|./text()");
+
+                    if (childNodes != null)
+                    {
+                        foreach (var child in childNodes)
+                        {
+                            nodes.Enqueue(child);
+                            parentNode.InsertBefore(child, node);
+                        }
+                    }
+
+                    parentNode.RemoveChild(node);
+                }
+            }
+
+            return document.DocumentNode.InnerHtml;
+        }
+
+        private static string RemoveClosingBrackets(string str)
+        {
+            return Regex.Replace(str, @"[\[\d-\]]", string.Empty);
+        }
     }
-  }
 }

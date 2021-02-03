@@ -7,26 +7,28 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public sealed class GetSecretInfoTextCommand : ITextCommand
-  {
-    private readonly IBotService _botService;
-    private readonly ChatSettingsBotData _chatSettingsBotData;
-
-    public GetSecretInfoTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
+    public sealed class GetSecretInfoTextCommand : ITextCommand
     {
-      _botService = botService;
-      _chatSettingsBotData = chatSettingsBotData;
-    }
-    public async Task ProcessMessage(Message message)
-    {
-      var exitKeyboard = KeyboardBuilder.CreateExitButton();
-      if (_chatSettingsBotData.AccountName == BotConstants.AccountName.Admin)
-      {
-        await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Some Secret Info", replyMarkup: exitKeyboard);
-        return;
-      }
+        private readonly IBotService _botService;
+        private readonly ChatSettingsBotData _chatSettingsBotData;
 
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Denied ", replyMarkup: exitKeyboard);
+        public GetSecretInfoTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
+        {
+            _botService = botService;
+            _chatSettingsBotData = chatSettingsBotData;
+        }
+
+        public async Task ProcessMessage(Message message)
+        {
+            var exitKeyboard = KeyboardBuilder.CreateExitButton();
+            if (_chatSettingsBotData.AccountName == BotConstants.AccountName.Admin)
+            {
+                await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Some Secret Info",
+                    replyMarkup: exitKeyboard);
+                return;
+            }
+
+            await _botService.Client.SendTextMessageAsync(message.Chat.Id, "Denied ", replyMarkup: exitKeyboard);
+        }
     }
-  }
 }

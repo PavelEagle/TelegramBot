@@ -5,20 +5,19 @@ using TelegramBot.BotSettings;
 
 namespace TelegramBot.Services
 {
-  public class BotService : IBotService
-  {
-    private readonly BotConfiguration _config;
-    public BotService(IOptions<BotConfiguration> config)
+    public class BotService : IBotService
     {
-      _config = config.Value;
-      // use proxy
-      Client = string.IsNullOrEmpty(_config.Socks5Host)
-        ? new TelegramBotClient(_config.BotToken)
-        : new TelegramBotClient(
-          _config.BotToken,
-          new HttpToSocks5Proxy(_config.Socks5Host, _config.Socks5Port));
-    }
+        public BotService(IOptions<BotConfiguration> config)
+        {
+            var config1 = config.Value;
+            // use proxy
+            Client = string.IsNullOrEmpty(config1.Socks5Host)
+                ? new TelegramBotClient(config1.BotToken)
+                : new TelegramBotClient(
+                    config1.BotToken,
+                    new HttpToSocks5Proxy(config1.Socks5Host, config1.Socks5Port));
+        }
 
-    public TelegramBotClient Client { get; }
-  }
+        public TelegramBotClient Client { get; }
+    }
 }

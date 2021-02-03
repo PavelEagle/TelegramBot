@@ -6,33 +6,34 @@ using TelegramBot.Services;
 
 namespace TelegramBot.TextCommands
 {
-  public sealed class VoiceSettingTextCommand : ITextCommand
-  {
-    private readonly IBotService _botService;
-    private readonly ChatSettingsBotData _chatSettingsBotData;
-
-    public VoiceSettingTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
+    public sealed class VoiceSettingTextCommand : ITextCommand
     {
-      _botService = botService;
-      _chatSettingsBotData = chatSettingsBotData;
-    }
-    public async Task ProcessMessage(Message message)
-    {
-      string infoMessage;
+        private readonly IBotService _botService;
+        private readonly ChatSettingsBotData _chatSettingsBotData;
 
-      if (!_chatSettingsBotData.VoiceAnswer)
-      {
-        _chatSettingsBotData.VoiceAnswer = true;
-        infoMessage = "Voice: On";
-      }
-      else
-      {
-        _chatSettingsBotData.VoiceAnswer = false;
-        infoMessage = "Voice: Off";
-      }
+        public VoiceSettingTextCommand(IBotService botService, ChatSettingsBotData chatSettingsBotData)
+        {
+            _botService = botService;
+            _chatSettingsBotData = chatSettingsBotData;
+        }
 
-      var exitKeyboard = KeyboardBuilder.CreateExitButton();
-      await _botService.Client.SendTextMessageAsync(message.Chat.Id, infoMessage, replyMarkup: exitKeyboard);
+        public async Task ProcessMessage(Message message)
+        {
+            string infoMessage;
+
+            if (!_chatSettingsBotData.VoiceAnswer)
+            {
+                _chatSettingsBotData.VoiceAnswer = true;
+                infoMessage = "Voice: On";
+            }
+            else
+            {
+                _chatSettingsBotData.VoiceAnswer = false;
+                infoMessage = "Voice: Off";
+            }
+
+            var exitKeyboard = KeyboardBuilder.CreateExitButton();
+            await _botService.Client.SendTextMessageAsync(message.Chat.Id, infoMessage, replyMarkup: exitKeyboard);
+        }
     }
-  }
 }
